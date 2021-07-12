@@ -1,0 +1,25 @@
+[0.484s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'list', '-p', '--base-paths', '/usr/bolt_ws/src/ros2_control_bolt']
+[0.485s] DEBUG:colcon:Parsed command line arguments: Namespace(base_paths=['/usr/bolt_ws/src/ros2_control_bolt'], build_base='build', ignore_user_meta=False, log_base=None, log_level=None, main=<bound method ListVerb.main of <colcon_package_information.verb.list.ListVerb object at 0x7f350d811f70>>, metas=['./colcon.meta'], names_only=False, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_end=None, packages_ignore=None, packages_ignore_regex=None, packages_select=None, packages_select_build_failed=False, packages_select_by_dep=None, packages_select_regex=None, packages_select_test_failures=False, packages_skip=None, packages_skip_build_finished=False, packages_skip_by_dep=None, packages_skip_regex=None, packages_skip_test_passed=False, packages_skip_up_to=None, packages_start=None, packages_up_to=None, packages_up_to_regex=None, paths=None, paths_only=True, topological_graph=False, topological_graph_density=False, topological_graph_dot=False, topological_graph_dot_cluster=False, topological_graph_dot_include_skipped=False, topological_graph_legend=False, topological_order=False, verb_extension=<colcon_package_information.verb.list.ListVerb object at 0x7f350d811f70>, verb_name='list', verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7f350d6bc3d0>)
+[0.790s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.790s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.790s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.790s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.791s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.791s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/usr/bolt_ws/src/ros2_control_bolt'
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extensions ['ignore', 'ignore_ament_install']
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extension 'ignore'
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extension 'ignore_ament_install'
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extensions ['colcon_pkg']
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extension 'colcon_pkg'
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extensions ['colcon_meta']
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extension 'colcon_meta'
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extensions ['ros']
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extension 'ros'
+[0.899s] DEBUG:colcon.colcon_core.package_identification:Failed to parse potential ROS package manifest in'/usr/bolt_ws/src/ros2_control_bolt': Error(s) in package '/usr/bolt_ws/src/ros2_control_bolt/package.xml':
+The manifest contains invalid XML:
+XML or text declaration not at start of entity: line 3, column 0
+[0.899s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extensions ['cmake', 'python']
+[0.899s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extension 'cmake'
+[1.009s] Level 1:colcon.colcon_core.package_identification:_identify(/usr/bolt_ws/src/ros2_control_bolt) by extension 'python'
+[1.009s] DEBUG:colcon.colcon_core.package_identification:Package '/usr/bolt_ws/src/ros2_control_bolt' with type 'cmake' and name 'ros2_control_bolt'
+[1.009s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
