@@ -31,36 +31,36 @@
 
 
 using namespace odri_control_interface;
-//using namespace Eigen;
+using namespace Eigen;
 
 
 #include <iostream>
 #include <stdexcept>
 
-typedef Eigen::Matrix<double, 6, 1> Vector6d;
+SystemBoltHardware Bolt;
+
+/*typedef Eigen::Matrix<double, 6, 1> Vector6d;
 typedef Eigen::Matrix<bool, 6, 1> Vector6b;
 
 typedef Eigen::Matrix<long, 3, 1> Vector3l;
 typedef Eigen::Matrix<long, 4, 1> Vector4l;
 typedef Eigen::Matrix<long, 6, 1> Vector6l;
-typedef Eigen::Matrix<int, 6, 1> Vector6i;
+typedef Eigen::Matrix<int, 6, 1> Vector6i;*/
 
 
 // Define Bolt robot 
 //auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(argv[1]);
 //auto main_board_ptr_ = std::make_shared<MasterBoardInterface>("enp3s0");
 
-/*Vector6i motor_numbers;
-motor_numbers << 0, 3, 2, 1, 5, 4;*/
 
-/*Vector6i motor_numbers(6,1);
-motor_numbers(0,0) = 0;
-motor_numbers(1,0) = 3;
-motor_numbers(2,0) = 2;
-motor_numbers(3,0) = 1;
-motor_numbers(4,0) = 5;
-motor_numbers(5,0) = 4;*/
 
+/*Vector6i motor_numbers(6);
+motor_numbers(0) = 0;
+motor_numbers(1) = 3;
+motor_numbers(2) = 2;
+motor_numbers(3) = 1;
+motor_numbers(4) = 5;
+motor_numbers(5) = 4;*/
 
 /*Vector6b motor_reversed;
 motor_reversed << true, false, true, true, false, false;
