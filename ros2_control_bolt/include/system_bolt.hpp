@@ -15,6 +15,14 @@
 #ifndef ROS2_CONTROL_BOLT__SYSTEM_BOLT_HPP_
 #define ROS2_CONTROL_BOLT__SYSTEM_BOLT_HPP_
 
+/*Connection to ODRI for read sensors and write commands*/
+#include "odri_control_interface/calibration.hpp"
+#include "odri_control_interface/robot.hpp"
+//#include <Eigen/Eigen>
+#include "semantic_components/imu_sensor.hpp"
+
+
+
 #include <memory>
 #include <set>
 #include <string>
@@ -29,12 +37,6 @@
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
 #include "hardware_interface/types/hardware_interface_status_values.hpp"
 #include "visibility_control.h"
-
-/*Connection to ODRI for read sensors and write commands*/
-#include "odri_control_interface/calibration.hpp"
-#include "odri_control_interface/robot.hpp"
-#include <Eigen/Eigen>
-#include "semantic_components/imu_sensor.hpp"
 
 
 using hardware_interface::return_type;
