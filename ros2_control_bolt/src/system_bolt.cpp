@@ -37,64 +37,6 @@ using namespace Eigen;
 #include <iostream>
 #include <stdexcept>
 
-SystemBoltHardware Bolt;
-
-/*typedef Eigen::Matrix<double, 6, 1> Vector6d;
-typedef Eigen::Matrix<bool, 6, 1> Vector6b;
-
-typedef Eigen::Matrix<long, 3, 1> Vector3l;
-typedef Eigen::Matrix<long, 4, 1> Vector4l;
-typedef Eigen::Matrix<long, 6, 1> Vector6l;
-typedef Eigen::Matrix<int, 6, 1> Vector6i;*/
-
-
-// Define Bolt robot 
-//auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(argv[1]);
-//auto main_board_ptr_ = std::make_shared<MasterBoardInterface>("enp3s0");
-
-
-
-/*Vector6i motor_numbers(6);
-motor_numbers(0) = 0;
-motor_numbers(1) = 3;
-motor_numbers(2) = 2;
-motor_numbers(3) = 1;
-motor_numbers(4) = 5;
-motor_numbers(5) = 4;*/
-
-/*Vector6b motor_reversed;
-motor_reversed << true, false, true, true, false, false;
-
-Vector6d joint_lower_limits;
-joint_lower_limits << -0.5, -1.7, -3.4, -0.5, -1.7, -3.4;     //Modif d'après lecture des capteurs (demo bolt)
-Vector6d joint_upper_limits;
-joint_upper_limits << 0.5, 1.7, +3.4, +0.5, +1.7, +3.4;       //Modif d'après lecture des capteurs (demo bolt)
-
-// Define the joint module.
-auto joints = std::make_shared<JointModules>(main_board_ptr_,
-                                             motor_numbers,
-                                             0.025,
-                                             9.,
-                                             12.,	  //MAX CURRENT = 12
-                                             motor_reversed,
-                                             joint_lower_limits,
-                                             joint_upper_limits,
-                                             80.,
-                                             0.5);
-
-// Define the IMU.
-Vector3l rotate_vector;
-Vector4l orientation_vector;
-rotate_vector << 1, 2, 3;
-orientation_vector << 1, 2, 3, 4;
-auto imu = std::make_shared<IMU>(
-    main_board_ptr_, rotate_vector, orientation_vector);
-
-// Define the robot.
-auto robot = std::make_shared<Robot>(main_board_ptr_, joints, imu);
-
-*/
-
 
 
 namespace ros2_control_bolt
@@ -105,9 +47,70 @@ namespace ros2_control_bolt
 Eigen::Vector6d desired_joint_position = Eigen::Vector6d::Zero();
 Eigen::Vector6d desired_torque = Eigen::Vector6d::Zero();
 
-/* Main driver interface.
-robot_ = odri_control_interface::RobotFromYamlFile(
-network_id_, ODRI_CONTROL_INTERFACE_YAML_PATH);*/
+
+return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info, auto& robot)
+{
+  /*Définir le robot (ODRI) à partir des variables de l'URDF*/
+
+  // Define board (ODRI)
+  auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(argv[1]);
+
+  // Define joints (ODRI)
+  motor_numbers << 0, 3, 2, 1, 5, 4;
+  motor_reversed_polarities << true, false, true, true, false, false;
+  
+  for (const hardware_interface::ComponentInfo & joint : info.joints) {
+    // Joint lower and upper limits
+    joint_lower_limits[joint_name_to_motor_nb[joint.name]] = stod(joint.command_interfaces[0].min);   //Modif d'après lecture des capteurs (demo bolt)
+    joint_upper_limits[joint_name_to_motor_nb[joint.name]] = stod(joint.command_interfaces[0].max);   //Modif d'après lecture des capteurs (demo bolt)
+  }
+
+  auto joints = std::make_shared<JointModules>(main_board_ptr_,
+                                               motor_numbers,
+                                               motor_constants,
+                                               gear_ratios,
+                                               max_currents,
+                                               motor_reversed_polarities,
+                                               joint_lower_limits,
+                                               joint_upper_limits,
+                                               max_joint_velocities,
+                                               safety_damping);
+
+  // Define the IMU (ODRI).
+  rotate_vector << 1, 2, 3;
+  orientation_vector << 1, 2, 3, 4;
+  auto imu = std::make_shared<IMU>(
+      main_board_ptr_, rotate_vector, orientation_vector);
+  
+  // Define the robot (ODRI).
+  robot = std::make_shared<Robot>(main_board_ptr_, joints, imu);
+
+/*
+  for (const hardware_interface::ComponentInfo & joint : info.joints) {
+    //Données des joints
+    //Sorties (commandes)
+    joint.command_interfaces;
+    //Entrées (états)
+    joint.state_interfaces;
+    
+  }
+
+  for (const hardware_interface::ComponentInfo & sensor : info.sensors) {
+    //Données des capteurs
+    //Entrées (états)
+    sensor.state_interfaces;
+  }
+
+    */
+
+return return_type::OK;
+}
+
+
+
+
+
+
 
 return_type SystemBoltHardware::configure(
   const hardware_interface::HardwareInfo & info)
@@ -116,20 +119,23 @@ return_type SystemBoltHardware::configure(
     return return_type::ERROR;
   }
 
+
   hw_start_sec_ = stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]);
   hw_stop_sec_ = stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
   hw_slowdown_ = stod(info_.hardware_parameters["example_param_hw_slowdown"]);
 
-  //Joint number
-  hw_joint_FLHAA_ = stod(info_.hardware_parameters["FLHAA"]);
-  hw_joint_FLHFE_ = stod(info_.hardware_parameters["FLHFE"]);
-  hw_joint_FLK_ = stod(info_.hardware_parameters["FLK"]);
-  hw_joint_FRHAA_ = stod(info_.hardware_parameters["FRHAA"]);
-  hw_joint_FRHFE_ = stod(info_.hardware_parameters["FRHFE"]);
-  hw_joint_FRK_ = stod(info_.hardware_parameters["FRK"]);
+ 
 
   // For each joint.
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+
+    // Map joint with motor number
+    // (uses at instead of [] because of joint constantness)
+    joint_name_to_motor_nb[joint.name] = stoi(joint.parameters.at("motor_number"));
+    
+    // Initialize state of the joint by default to NaN
+    // it allows to see which joints are not properly initialized
+    // from the real hardware
     hw_states_[joint.name] =
       {std::numeric_limits<double>::quiet_NaN(),
        std::numeric_limits<double>::quiet_NaN(),
@@ -143,7 +149,7 @@ return_type SystemBoltHardware::configure(
        std::numeric_limits<double>::quiet_NaN(),
        std::numeric_limits<double>::quiet_NaN()};
     control_mode_[joint.name] = control_mode_t::NO_VALID_MODE;
-
+  
 
     // SystemBolt has exactly 5 doubles for the state and
     // 5 doubles for the command interface on each joint
@@ -216,6 +222,8 @@ return_type SystemBoltHardware::configure(
       }
     }
   }
+
+  
 
   status_ = hardware_interface::status::CONFIGURED;
   RCLCPP_INFO(
@@ -485,49 +493,34 @@ hardware_interface::return_type SystemBoltHardware::read()
   //"Reading...");
 
   // Data acquisition
-  /*robot_->ParseSensorData();
+  robot->ParseSensorData();
 
-  auto sensor_positions = joints->GetPositions();
-  auto sensor_velocities = joints->GetVelocities();
-  auto measured_torques = joints->GetMeasuredTorques();
-  auto imu_gyro = imu->GetGyroscope();
+  auto sensor_positions = robot->joints->GetPositions();
+  auto sensor_velocities = robot->joints->GetVelocities();
+  auto measured_torques = robot->joints->GetMeasuredTorques();
+/*  auto imu_gyro = imu->GetGyroscope();
   auto imu_accelero = imu->GetAccelerometer();
   auto imu_line_acc = imu->GetLinearAcceleration();
   auto imu_euler = imu->GetAttitudeEuler();
-  auto imu_quater = imu->GetAttitudeQuaternion();
+  auto imu_quater = imu->GetAttitudeQuaternion();*/
 
 
-  hw_states_["FLHAA"].position = sensor_positions[hw_joint_FLHAA_]
-  hw_states_["FLHFE"].position = sensor_positions[hw_joint_FLHFE_]
-  hw_states_["FLK"].position = sensor_positions[hw_joint_FLK_]
-  hw_states_["FRHAA"].position = sensor_positions[hw_joint_FRHAA_]
-  hw_states_["FRHFE"].position = sensor_positions[hw_joint_FRHFE_]
-  hw_states_["FRK"].position = sensor_positions[hw_joint_FRK_]
+  // Assignment of sensor data to ros2_control variables
+  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+    hw_states_[joint.name].position = sensor_positions[joint_name_to_motor_nb[joint.name]];
+    hw_states_[joint.name].velocity = sensor_velocities[joint_name_to_motor_nb[joint.name]];
+    hw_states_[joint.name].effort = measured_torques[joint_name_to_motor_nb[joint.name]];
 
-  hw_states_["FLHAA"].velocity = sensor_velocities[hw_joint_FLHAA_]
-  hw_states_["FLHFE"].velocity = sensor_velocities[hw_joint_FLHFE_]
-  hw_states_["FLK"].velocity = sensor_velocities[hw_joint_FLK_]
-  hw_states_["FRHAA"].velocity = sensor_velocities[hw_joint_FRHAA_]
-  hw_states_["FRHFE"].velocity = sensor_velocities[hw_joint_FRHFE_]
-  hw_states_["FRK"].velocity = sensor_velocities[hw_joint_FRK_]
+    //Printing test
+    std::cout << "Joints FLHAA: ";
+    hw_states_["FLHAA"].position;
+    std::cout << std::endl;
+  }
 
-  hw_states_["FLHAA"].effort = measured_torques[hw_joint_FLHAA_]
-  hw_states_["FLHFE"].effort = measured_torques[hw_joint_FLHFE_]
-  hw_states_["FLK"].effort = measured_torques[hw_joint_FLK_]
-  hw_states_["FRHAA"].effort = measured_torques[hw_joint_FRHAA_]
-  hw_states_["FRHFE"].effort = measured_torques[hw_joint_FRHFE_]
-  hw_states_["FRK"].effort = measured_torques[hw_joint_FRK_]*/
   
 
 /*
-  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-    //Sensors
-    //Position
 
-    std::cout << "Joints: ";
-    joint->PrintVector(joint->GetPositions());
-    std::cout << std::endl;
-  }
   // RCLCPP_INFO(
   //rclcpp::get_logger("SystemBoltHardware"),
   //"Joints sucessfully read!");
@@ -537,11 +530,6 @@ hardware_interface::return_type SystemBoltHardware::read()
 
   /*
 
-    //Velocity
-    hw_states_[joint.name].velocity = robot.get_joint_velocities(i,0);
-
-    //Torque
-    hw_states_[joint.name].effort = robot.get_joint_torques(i,0);
 
 
 
@@ -618,10 +606,19 @@ hardware_interface::return_type SystemBoltHardware::read()
     //   "Got state (%.5f,%.5f,%.5f) for joint %d!",
     //   hw_states_[i].position, hw_states_[i].velocity,
     //   hw_states_[i].effort, i);
+
+    RCLCPP_INFO(
+      rclcpp::get_logger("SystemBoltHardware"),
+      "Got state (%.5f,%.5f,%.5f) for joint %d!",
+      hw_states_[joint.name].position, hw_states_[joint.name].velocity,
+      hw_states_[joint.name].effort, joint_name_to_motor_nb[joint.name]);
+
+    
   }
-  // RCLCPP_INFO(
-  //   rclcpp::get_logger("SystemBoltHardware"),
-  //   "Joints sucessfully read!");
+
+  RCLCPP_INFO(
+    rclcpp::get_logger("SystemBoltHardware"),
+    "Joints sucessfully read!");
 */
   return return_type::OK;
 }

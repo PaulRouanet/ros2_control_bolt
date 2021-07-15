@@ -18,8 +18,6 @@
 /*Connection to ODRI for read sensors and write commands*/
 #include "odri_control_interface/calibration.hpp"
 #include "odri_control_interface/robot.hpp"
-//#include <Eigen/Eigen>
-#include "semantic_components/imu_sensor.hpp"
 
 
 
@@ -37,6 +35,8 @@
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
 #include "hardware_interface/types/hardware_interface_status_values.hpp"
 #include "visibility_control.h"
+#include "semantic_components/imu_sensor.hpp"
+
 
 
 using hardware_interface::return_type;
@@ -127,17 +127,14 @@ class SystemBoltHardware : public
   hardware_interface::BaseInterface<hardware_interface::SystemInterface>
 {
 public:
-  
-  // Constructeur
-  SystemBoltHardware();
-  
-  // Destructeur
-  ~SystemBoltHardware();
 
   RCLCPP_SHARED_PTR_DEFINITIONS(SystemBoltHardware)
 
   ROS2_CONTROL_BOLT_PUBLIC
   return_type configure(const hardware_interface::HardwareInfo & info) override;
+
+  ROS2_CONTROL_BOLT_PUBLIC
+  return_type init_robot(const hardware_interface::HardwareInfo & info, auto& robot);
 
   ROS2_CONTROL_BOLT_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
@@ -174,12 +171,13 @@ private:
   double hw_slowdown_;
 
   //Joint number from urdf
-  double hw_joint_FLHAA_;
-  double hw_joint_FLHFE_;
-  double hw_joint_FLK_;
-  double hw_joint_FRHAA_;
-  double hw_joint_FRHFE_;
-  double hw_joint_FRK_;
+  /*int hw_joint_FLHAA_;
+  int hw_joint_FLHFE_;
+  int hw_joint_FLK_;
+  int hw_joint_FRHAA_;
+  int hw_joint_FRHFE_;
+  int hw_joint_FRK_;*/
+  std::map<std::string,int> joint_name_to_motor_nb;
 
   // Store the command for the simulated robot
   std::map<std::string,PosVelEffortGains> hw_commands_;
@@ -191,7 +189,7 @@ private:
   //Definition of multiple variables about Bolt
   // Joint
   Eigen::Vector6i motor_numbers;
-  Eigen::Vector6b motor_reversed;
+  Eigen::Vector6b motor_reversed_polarities;
   Eigen::Vector6d joint_lower_limits;
   Eigen::Vector6d joint_upper_limits;
   // IMU
@@ -199,18 +197,21 @@ private:
   Eigen::Vector4l orientation_vector;
   
 
+  //Network id
+  char **argv;
+
+  //Joints constants
+  auto robot;
+
+  double motor_constants = 0.025;
+  double gear_ratios = 9.;
+  double max_currents = 12.;
+  double max_joint_velocities = 80.;
+  double safety_damping = 0.5;
+
 };
 
-SystemBoltHardware::SystemBoltHardware()
-{
-  motor_numbers << 0, 3, 2, 1, 5, 4;
-  motor_reversed << true, false, true, true, false, false;
-  joint_lower_limits << -0.5, -1.7, -3.4, -0.5, -1.7, -3.4;     //Modif d'après lecture des capteurs (demo bolt)
-  joint_upper_limits << 0.5, 1.7, +3.4, +0.5, +1.7, +3.4;       //Modif d'après lecture des capteurs (demo bolt)
-  rotate_vector << 1, 2, 3;
-  orientation_vector << 1, 2, 3, 4;
 
-}
 
 }  // namespace ros2_control_bolt
 
