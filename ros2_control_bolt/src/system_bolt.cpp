@@ -486,7 +486,15 @@ return_type SystemBoltHardware::start()
 
 return_type SystemBoltHardware::stop()
 {
-  RCLCPP_INFO(
+  // Set 0 values to commands
+  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+    hw_commands_[joint.name] = {0.0, 0.0, 0.0, 0.0, 0.0};
+  }
+
+
+
+
+  /*RCLCPP_INFO(
     rclcpp::get_logger("SystemBoltHardware"),
     "Stopping ...please wait...");
 
@@ -501,7 +509,7 @@ return_type SystemBoltHardware::stop()
 
   RCLCPP_INFO(
     rclcpp::get_logger("SystemBoltHardware"),
-    "System sucessfully stopped!");
+    "System sucessfully stopped!");*/
 
   return return_type::OK;
 }
