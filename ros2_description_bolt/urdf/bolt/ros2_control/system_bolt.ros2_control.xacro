@@ -133,6 +133,8 @@
         <state_interface name="orientation"/>
         <state_interface name="angular_velocity"/>
         <state_interface name="linear_acceleration"/>
+        <state_interface name="attitude_euler"/>
+        <state_interface name="attitude_quaternion"/>
       </sensor>
     </ros2_control>
 
