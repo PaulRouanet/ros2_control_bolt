@@ -82,8 +82,8 @@ int main(int argc, char **argv)
 
     Vector6d torques;
 
-    double kp = 3.;
-    double kd = 0.05;
+    /*double kp = 3.;
+    double kd = 0.05;*/
     int c = 0;
     std::chrono::time_point<std::chrono::system_clock> last =
         std::chrono::system_clock::now();
