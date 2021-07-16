@@ -482,8 +482,7 @@ return_type SystemBoltHardware::start()
 
 
 
-////// STOP
-
+// STOP
 
 return_type SystemBoltHardware::stop()
 {
@@ -633,12 +632,20 @@ SystemBoltHardware::write()
         //Chose à faire si le robot n'est pas Ready
       }
     }
-    
     robot->SendCommand();
   }
 
 
   // This part of the code sends command to the real robot.
+
+    for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+      hw_commands_[joint.name].position;
+      hw_commands_[joint.name].velocity;
+      hw_commands_[joint.name].effort;
+      hw_commands_[joint.name].Kp;
+      hw_commands_[joint.name].Kd;
+    }
+
 
   // RCLCPP_INFO(
   //   rclcpp::get_logger("SystemBoltHardware"),
