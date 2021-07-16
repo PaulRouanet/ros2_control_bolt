@@ -129,6 +129,11 @@
         <state_interface name="acceleration"/>
         <param name="motor_number">5</param>
       </joint>
+      <sensor name="IMU">
+        <state_interface name="orientation"/>
+        <state_interface name="angular_velocity"/>
+        <state_interface name="linear_acceleration"/>
+      </sensor>
     </ros2_control>
 
   </xacro:macro>
