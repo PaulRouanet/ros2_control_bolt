@@ -28,13 +28,12 @@
 #include "odri_control_interface/utils.hpp"
 #include "odri_control_interface/imu.hpp"
 
-#include "semantic_components/imu_sensor.hpp"
-
-
 
 
 using namespace odri_control_interface;
 using namespace Eigen;
+using namespace semantic_components;
+
 
 
 #include <iostream>
@@ -138,8 +137,15 @@ return_type SystemBoltHardware::configure(
   hw_stop_sec_ = stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
   hw_slowdown_ = stod(info_.hardware_parameters["example_param_hw_slowdown"]);
 
- 
-
+  //For each sensor.
+  for (const hardware_interface::ComponentInfo & sensor : info_.sensors) {
+    imu_states_[sensor.name] =
+      {std::numeric_limits<Eigen::Vector3d>::quiet_NaN(),
+       std::numeric_limits<Eigen::Vector3d>::quiet_NaN(),
+       std::numeric_limits<Eigen::Vector3d>::quiet_NaN(),
+       std::numeric_limits<Eigen::Vector3d>::quiet_NaN(),
+       std::numeric_limits<Eigen::Vector4d>::quiet_NaN()};
+  }
   // For each joint.
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
 
@@ -164,13 +170,7 @@ return_type SystemBoltHardware::configure(
        std::numeric_limits<double>::quiet_NaN()};
     control_mode_[joint.name] = control_mode_t::NO_VALID_MODE;
 
-    imu_states_["IMU"] =
-      {std::numeric_limits<Eigen::Vector4l>::quiet_NaN(),
-       std::numeric_limits<Eigen::Vector3l>::quiet_NaN(),
-       std::numeric_limits<Eigen::Vector3l>::quiet_NaN(),
-       std::numeric_limits<Eigen::Vector3l>::quiet_NaN(),
-       std::numeric_limits<Eigen::Vector3l>::quiet_NaN()};
-  
+     
 
     // SystemBolt has exactly 5 doubles for the state and
     // 5 doubles for the command interface on each joint
@@ -519,12 +519,17 @@ hardware_interface::return_type SystemBoltHardware::read()
   auto sensor_positions = robot->joints->GetPositions();
   auto sensor_velocities = robot->joints->GetVelocities();
   auto measured_torques = robot->joints->GetMeasuredTorques();
-  IMUSensor::orientation_ = robot->imu->GetGyroscope();
-  /*IMUSensor::angular_velocity_ = robot->imu->GetAccelerometer();
-  IMUSensor::linear_acceleration_ = robot->imu->GetLinearAcceleration();*/
-  //auto imu_euler = robot->imu->GetAttitudeEuler();
-  //auto imu_quater = robot->imu->GetAttitudeQuaternion();
+   
+  auto imu_orientation = robot->imu->GetGyroscope();
+  auto imu_ang_velocity = robot->imu->GetAccelerometer();
+  auto imu_linear_acc = robot->imu->GetLinearAcceleration();
+  auto imu_euler = robot->imu->GetAttitudeEuler();
+  auto imu_quater = robot->imu->GetAttitudeQuaternion();
 
+
+  /*IMUSensor::orientation_ = robot->imu->GetGyroscope();
+  IMUSensor::angular_velocity_ = robot->imu->GetAccelerometer();
+  IMUSensor::linear_acceleration_ = robot->imu->GetLinearAcceleration();*/
 
   // Assignment of sensor data to ros2_control variables
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
@@ -537,6 +542,32 @@ hardware_interface::return_type SystemBoltHardware::read()
     imu_states_["IMU"].angular_velocity = imu_accelerometer;
     imu_states_["IMU"].linear_acceleration = imu_linear_acceleration;*/
   }
+
+  for (const hardware_interface::ComponentInfo & sensor : info_.sensors) {
+    imu_states_[sensor.name].gyro[0] = imu_orientation[0];
+    imu_states_[sensor.name].gyro[1] = imu_orientation[1];
+    imu_states_[sensor.name].gyro[2] = imu_orientation[2];
+
+    imu_states_[sensor.name].accelero[0] = imu_ang_velocity[0];
+    imu_states_[sensor.name].accelero[1] = imu_ang_velocity[1];
+    imu_states_[sensor.name].accelero[2] = imu_ang_velocity[2];
+
+    imu_states_[sensor.name].line_acc[0] = imu_linear_acc[0];
+    imu_states_[sensor.name].line_acc[1] = imu_linear_acc[1];
+    imu_states_[sensor.name].line_acc[2] = imu_linear_acc[2];
+
+    imu_states_[sensor.name].euler[0] = imu_euler[0];
+    imu_states_[sensor.name].euler[1] = imu_euler[1];
+    imu_states_[sensor.name].euler[2] = imu_euler[2];
+
+    imu_states_[sensor.name].quater[0] = imu_quater[0];
+    imu_states_[sensor.name].quater[1] = imu_quater[1];
+    imu_states_[sensor.name].quater[2] = imu_quater[2];
+    imu_states_[sensor.name].quater[3] = imu_quater[3];
+
+
+  }
+
 
   
 
