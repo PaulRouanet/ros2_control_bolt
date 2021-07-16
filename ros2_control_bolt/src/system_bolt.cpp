@@ -594,7 +594,8 @@ SystemBoltHardware::write()
   Eigen::Vector6d positions;
   Eigen::Vector6d velocities;
   Eigen::Vector6d torques;
-  Eigen::Vector2d gains;
+  Eigen::Vector6d gain_KP;
+  Eigen::Vector6d gain_KD;
 
 
   double t = 0.0;
@@ -612,20 +613,21 @@ SystemBoltHardware::write()
         /*positions = ...;
         torques =  ...;*/
         t += dt;
-
-        /*
-        
-        PB : ne renvoi rien (void), donc pas possible de stocker l'info
         
         for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-          hw_commands_[joint.name].position = robot->joints->SetDesiredPositions(positions);
-          hw_commands_[joint.name].velocity = robot->joints->SetDesiredVelocities(velocities);                         
-          hw_commands_[joint.name].effort = robot->joints->SetTorques(torques);
-          hw_commands_[joint.name].Kp = robot->joints->SetPositionGains(gains);
-          hw_commands_[joint.name].Kd = robot->joints->SetVelocityGains(gains);
-        }*/
+          positions[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].position;
+          velocities[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].velocity;
+          torques[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].effort;
+          gain_KP[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].Kp;
+          gain_KD[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].Kd;
+        }
 
-        
+        robot->joints->SetDesiredPositions(positions);
+        robot->joints->SetDesiredVelocities(velocities);
+        robot->joints->SetTorques(torques);
+        robot->joints->SetPositionGains(gain_KP);
+        robot->joints->SetVelocityGains(gain_KD);
+          
       }
 
       else {
@@ -634,17 +636,6 @@ SystemBoltHardware::write()
     }
     robot->SendCommand();
   }
-
-
-  // This part of the code sends command to the real robot.
-
-    for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-      hw_commands_[joint.name].position;
-      hw_commands_[joint.name].velocity;
-      hw_commands_[joint.name].effort;
-      hw_commands_[joint.name].Kp;
-      hw_commands_[joint.name].Kd;
-    }
 
 
   // RCLCPP_INFO(
