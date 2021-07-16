@@ -544,29 +544,29 @@ hardware_interface::return_type SystemBoltHardware::read()
     hw_states_[joint.name].Kp = kp;
     hw_states_[joint.name].Kd = kd;
   }
+  
+  // Assignment of IMU data (URDF)
+  imu_states_["IMU"].gyro[0] = imu_gyroscope[0];
+  imu_states_["IMU"].gyro[1] = imu_gyroscope[1];
+  imu_states_["IMU"].gyro[2] = imu_gyroscope[2];
 
-  for (const hardware_interface::ComponentInfo & sensor : info_.sensors) {
-    imu_states_[sensor.name].gyro[0] = imu_gyroscope[0];
-    imu_states_[sensor.name].gyro[1] = imu_gyroscope[1];
-    imu_states_[sensor.name].gyro[2] = imu_gyroscope[2];
+  imu_states_["IMU"].accelero[0] = imu_accelero[0];
+  imu_states_["IMU"].accelero[1] = imu_accelero[1];
+  imu_states_["IMU"].accelero[2] = imu_accelero[2];
 
-    imu_states_[sensor.name].accelero[0] = imu_accelero[0];
-    imu_states_[sensor.name].accelero[1] = imu_accelero[1];
-    imu_states_[sensor.name].accelero[2] = imu_accelero[2];
+  imu_states_["IMU"].line_acc[0] = imu_linear_acc[0];
+  imu_states_["IMU"].line_acc[1] = imu_linear_acc[1];
+  imu_states_["IMU"].line_acc[2] = imu_linear_acc[2];
 
-    imu_states_[sensor.name].line_acc[0] = imu_linear_acc[0];
-    imu_states_[sensor.name].line_acc[1] = imu_linear_acc[1];
-    imu_states_[sensor.name].line_acc[2] = imu_linear_acc[2];
+  imu_states_["IMU"].euler[0] = imu_euler[0];
+  imu_states_["IMU"].euler[1] = imu_euler[1];
+  imu_states_["IMU"].euler[2] = imu_euler[2];
 
-    imu_states_[sensor.name].euler[0] = imu_euler[0];
-    imu_states_[sensor.name].euler[1] = imu_euler[1];
-    imu_states_[sensor.name].euler[2] = imu_euler[2];
-
-    imu_states_[sensor.name].quater[0] = imu_quater[0];
-    imu_states_[sensor.name].quater[1] = imu_quater[1];
-    imu_states_[sensor.name].quater[2] = imu_quater[2];
-    imu_states_[sensor.name].quater[3] = imu_quater[3];
-  }
+  imu_states_["IMU"].quater[0] = imu_quater[0];
+  imu_states_["IMU"].quater[1] = imu_quater[1];
+  imu_states_["IMU"].quater[2] = imu_quater[2];
+  imu_states_["IMU"].quater[3] = imu_quater[3];
+  
 
   // RCLCPP_INFO(
   //rclcpp::get_logger("SystemBoltHardware"),
