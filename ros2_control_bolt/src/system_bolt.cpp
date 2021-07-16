@@ -426,19 +426,27 @@ SystemBoltHardware::export_command_interfaces()
 
 
 
-////// START
-
-
-/*robot->Start();*/
-
+// START
 
 return_type SystemBoltHardware::start()
 {
-  RCLCPP_INFO(
+  robot->Start();
+
+  // set some default values
+  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+    if (std::isnan(hw_states_[joint.name].position)) {
+      hw_states_[joint.name] = {0.0, 0.0, 0.0, 0.0, 0.0};
+      hw_commands_[joint.name] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    }
+  }
+
+  status_ = hardware_interface::status::STARTED;
+
+/*  RCLCPP_INFO(
     rclcpp::get_logger("SystemBoltHardware"),
     "Starting ...please wait...");
 
-/*Starting countdown*/
+//Starting countdown
   for (auto i = 0; i <= hw_start_sec_; ++i) {
     rclcpp::sleep_for(std::chrono::seconds(1));
     RCLCPP_INFO(
@@ -458,7 +466,9 @@ return_type SystemBoltHardware::start()
 
   RCLCPP_INFO(
     rclcpp::get_logger("SystemBoltHardware"),
-    "System Sucessfully started!");
+    "System Sucessfully started!");*/
+
+
 
   return return_type::OK;
 }
@@ -581,6 +591,53 @@ hardware_interface::return_type SystemBoltHardware::read()
 hardware_interface::return_type
 SystemBoltHardware::write()
 {
+  
+  Eigen::Vector6d positions;
+  Eigen::Vector6d velocities;
+  Eigen::Vector6d torques;
+  Eigen::Vector2d gains;
+
+
+  double t = 0.0;
+  double dt = 0.001;
+  std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
+
+  while (!robot->IsTimeout()) {
+    if (((std::chrono::duration<double>)(std::chrono::system_clock::now()-last)).count() > 0.001) {
+      
+      last = std::chrono::system_clock::now();  // last+dt would be better
+
+      if (robot->IsReady()) {
+        
+        // Control law        
+        /*positions = ...;
+        torques =  ...;*/
+        t += dt;
+
+        /*
+        
+        PB : ne renvoi rien (void), donc pas possible de stocker l'info
+        
+        for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+          hw_commands_[joint.name].position = robot->joints->SetDesiredPositions(positions);
+          hw_commands_[joint.name].velocity = robot->joints->SetDesiredVelocities(velocities);                         
+          hw_commands_[joint.name].effort = robot->joints->SetTorques(torques);
+          hw_commands_[joint.name].Kp = robot->joints->SetPositionGains(gains);
+          hw_commands_[joint.name].Kd = robot->joints->SetVelocityGains(gains);
+        }*/
+
+        
+      }
+
+      else {
+        //Chose à faire si le robot n'est pas Ready
+      }
+    }
+    
+    robot->SendCommand();
+  }
+
+
   // This part of the code sends command to the real robot.
 
   // RCLCPP_INFO(
