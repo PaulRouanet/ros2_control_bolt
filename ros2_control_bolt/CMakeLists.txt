@@ -60,6 +60,7 @@ find_package(controller_interface REQUIRED)
 
 
 
+
 #find_package(ros2_control REQUIRED)
 #find_package(ros2_control_demos REQUIRED)
 
@@ -68,6 +69,7 @@ add_project_dependency(yaml-cpp CONFIG REQUIRED)
 add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
 add_project_dependency(master_board_sdk REQUIRED)
 add_project_dependency(odri_control_interface REQUIRED)
+add_project_dependency(controller_interface REQUIRED)
 
 # Usefull for system_bolt
 #add_project_dependency(hardware_interface REQUIRED)
@@ -113,6 +115,7 @@ target_link_libraries(${PROJECT_NAME} master_board_sdk::master_board_sdk)
 target_link_libraries(${PROJECT_NAME} Eigen3::Eigen)
 target_link_libraries(${PROJECT_NAME} rclcpp::rclcpp)
 target_link_libraries(${PROJECT_NAME} odri_control_interface::odri_control_interface)
+#target_link_libraries(${PROJECT_NAME} controller_interface::controller_interface)
 
 ament_target_dependencies(
   ${PROJECT_NAME}
