@@ -180,12 +180,6 @@ private:
   double hw_slowdown_;
 
   //Joint number from urdf
-  /*int hw_joint_FLHAA_;
-  int hw_joint_FLHFE_;
-  int hw_joint_FLK_;
-  int hw_joint_FRHAA_;
-  int hw_joint_FRHFE_;
-  int hw_joint_FRK_;*/
   std::map<std::string,int> joint_name_to_motor_nb;
 
   // Store the command for the simulated robot
