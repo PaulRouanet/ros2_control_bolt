@@ -28,6 +28,9 @@
 #include "odri_control_interface/utils.hpp"
 #include "odri_control_interface/imu.hpp"
 
+#include "semantic_components/imu_sensor.hpp"
+
+
 
 
 using namespace odri_control_interface;
@@ -90,7 +93,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   std::cin >> kp;
   std::cout << "Kp = " << kp;
   std::cout << "\n" << std::endl;
-  
+
   std::cout << "Enter Kd value (0.05 in casual use) : ";
   std::cin >> kd;
   std::cout << "Kd = " << kd;
@@ -516,8 +519,8 @@ hardware_interface::return_type SystemBoltHardware::read()
   auto sensor_positions = robot->joints->GetPositions();
   auto sensor_velocities = robot->joints->GetVelocities();
   auto measured_torques = robot->joints->GetMeasuredTorques();
-  /*IMUSensor::orientation_ = robot->imu->GetGyroscope();
-  IMUSensor::angular_velocity_ = robot->imu->GetAccelerometer();
+  IMUSensor::orientation_ = robot->imu->GetGyroscope();
+  /*IMUSensor::angular_velocity_ = robot->imu->GetAccelerometer();
   IMUSensor::linear_acceleration_ = robot->imu->GetLinearAcceleration();*/
   //auto imu_euler = robot->imu->GetAttitudeEuler();
   //auto imu_quater = robot->imu->GetAttitudeQuaternion();
@@ -530,7 +533,7 @@ hardware_interface::return_type SystemBoltHardware::read()
     hw_states_[joint.name].effort = measured_torques[joint_name_to_motor_nb[joint.name]];
     hw_states_[joint.name].Kp = kp;
     hw_states_[joint.name].Kd = kd;
-    /*imu_states_["IMU"].orientation = imu_gyroscope;
+    /*imu_states_.imu_gyro = imu_gyroscope;
     imu_states_["IMU"].angular_velocity = imu_accelerometer;
     imu_states_["IMU"].linear_acceleration = imu_linear_acceleration;*/
   }
