@@ -115,7 +115,6 @@ target_link_libraries(${PROJECT_NAME} master_board_sdk::master_board_sdk)
 target_link_libraries(${PROJECT_NAME} Eigen3::Eigen)
 target_link_libraries(${PROJECT_NAME} rclcpp::rclcpp)
 target_link_libraries(${PROJECT_NAME} odri_control_interface::odri_control_interface)
-#target_link_libraries(${PROJECT_NAME} controller_interface::controller_interface)
 
 ament_target_dependencies(
   ${PROJECT_NAME}
