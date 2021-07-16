@@ -48,7 +48,7 @@ Eigen::Vector6d desired_joint_position = Eigen::Vector6d::Zero();
 Eigen::Vector6d desired_torque = Eigen::Vector6d::Zero();
 
 
-return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info, auto& robot)
+return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info, std::shared_ptr<odri_control_interface::Robot> & robot)
 {
   /*Définir le robot (ODRI) à partir des variables de l'URDF*/
 
@@ -149,6 +149,13 @@ return_type SystemBoltHardware::configure(
        std::numeric_limits<double>::quiet_NaN(),
        std::numeric_limits<double>::quiet_NaN()};
     control_mode_[joint.name] = control_mode_t::NO_VALID_MODE;
+
+    imu_states_["IMU"] =
+      {std::numeric_limits<Eigen::Vector4l>::quiet_NaN(),
+       std::numeric_limits<Eigen::Vector3l>::quiet_NaN(),
+       std::numeric_limits<Eigen::Vector3l>::quiet_NaN(),
+       std::numeric_limits<Eigen::Vector3l>::quiet_NaN(),
+       std::numeric_limits<Eigen::Vector3l>::quiet_NaN()};
   
 
     // SystemBolt has exactly 5 doubles for the state and
@@ -498,11 +505,11 @@ hardware_interface::return_type SystemBoltHardware::read()
   auto sensor_positions = robot->joints->GetPositions();
   auto sensor_velocities = robot->joints->GetVelocities();
   auto measured_torques = robot->joints->GetMeasuredTorques();
-/*  auto imu_gyro = imu->GetGyroscope();
-  auto imu_accelero = imu->GetAccelerometer();
-  auto imu_line_acc = imu->GetLinearAcceleration();
-  auto imu_euler = imu->GetAttitudeEuler();
-  auto imu_quater = imu->GetAttitudeQuaternion();*/
+  /*IMUSensor::orientation_ = robot->imu->GetGyroscope();
+  IMUSensor::angular_velocity_ = robot->imu->GetAccelerometer();
+  IMUSensor::linear_acceleration_ = robot->imu->GetLinearAcceleration();*/
+  //auto imu_euler = robot->imu->GetAttitudeEuler();
+  //auto imu_quater = robot->imu->GetAttitudeQuaternion();
 
 
   // Assignment of sensor data to ros2_control variables
@@ -510,11 +517,9 @@ hardware_interface::return_type SystemBoltHardware::read()
     hw_states_[joint.name].position = sensor_positions[joint_name_to_motor_nb[joint.name]];
     hw_states_[joint.name].velocity = sensor_velocities[joint_name_to_motor_nb[joint.name]];
     hw_states_[joint.name].effort = measured_torques[joint_name_to_motor_nb[joint.name]];
-
-    //Printing test
-    std::cout << "Joints FLHAA: ";
-    hw_states_["FLHAA"].position;
-    std::cout << std::endl;
+    /*imu_states_["IMU"].orientation = imu_gyroscope;
+    imu_states_["IMU"].angular_velocity = imu_accelerometer;
+    imu_states_["IMU"].linear_acceleration = imu_linear_acceleration;*/
   }
 
   

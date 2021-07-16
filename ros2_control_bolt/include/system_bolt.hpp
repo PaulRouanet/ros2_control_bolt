@@ -96,6 +96,15 @@ struct PosVelEffortGains
   double Kd;
 };
 
+struct GyroAccLineEulerQuater
+{
+  Eigen::Vector4l imu_gyro;
+  Eigen::Vector3l imu_accelero;
+  Eigen::Vector3l imu_line_acc;
+  Eigen::Vector3l imu_euler;
+  Eigen::Vector3l imu_quater;
+};
+
 constexpr const auto HW_IF_GAIN_KP = "gain_kp";
 constexpr const auto HW_IF_GAIN_KD = "gain_kd";
 
@@ -134,7 +143,7 @@ public:
   return_type configure(const hardware_interface::HardwareInfo & info) override;
 
   ROS2_CONTROL_BOLT_PUBLIC
-  return_type init_robot(const hardware_interface::HardwareInfo & info, auto& robot);
+  return_type init_robot(const hardware_interface::HardwareInfo & info, std::shared_ptr<odri_control_interface::Robot> & robot);
 
   ROS2_CONTROL_BOLT_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
@@ -184,6 +193,10 @@ private:
   std::map<std::string,PosVelEffortGains> hw_states_;
   std::map<std::string,control_mode_t> control_mode_;
 
+  // Store the imu data
+  std::map<std::string,GyroAccLineEulerQuater> imu_states_;
+
+
   std::map<std::string,control_mode_t> new_modes_;
 
   //Definition of multiple variables about Bolt
@@ -201,7 +214,7 @@ private:
   char **argv;
 
   //Joints constants
-  auto robot;
+  std::shared_ptr<odri_control_interface::Robot> robot;
 
   double motor_constants = 0.025;
   double gear_ratios = 9.;
