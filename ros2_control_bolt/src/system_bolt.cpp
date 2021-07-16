@@ -513,7 +513,7 @@ hardware_interface::return_type SystemBoltHardware::read()
   //rclcpp::get_logger("SystemBoltHardware"),
   //"Reading...");
 
-  // Data acquisition
+  // Data acquisition (with ODRI)
   robot->ParseSensorData();
 
   auto sensor_positions = robot->joints->GetPositions();
@@ -527,7 +527,7 @@ hardware_interface::return_type SystemBoltHardware::read()
   auto imu_quater = robot->imu->GetAttitudeQuaternion();
 
 
-  // Assignment of sensor data to ros2_control variables
+  // Assignment of sensor data to ros2_control variables (URDF)
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
     hw_states_[joint.name].position = sensor_positions[joint_name_to_motor_nb[joint.name]];
     hw_states_[joint.name].velocity = sensor_velocities[joint_name_to_motor_nb[joint.name]];
