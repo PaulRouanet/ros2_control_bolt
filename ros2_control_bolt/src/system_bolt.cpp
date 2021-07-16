@@ -509,7 +509,7 @@ return_type SystemBoltHardware::stop()
 hardware_interface::return_type SystemBoltHardware::read()
 {
 
-   // RCLCPP_INFO(
+  // RCLCPP_INFO(
   //rclcpp::get_logger("SystemBoltHardware"),
   //"Reading...");
 
@@ -520,16 +520,12 @@ hardware_interface::return_type SystemBoltHardware::read()
   auto sensor_velocities = robot->joints->GetVelocities();
   auto measured_torques = robot->joints->GetMeasuredTorques();
    
-  auto imu_orientation = robot->imu->GetGyroscope();
-  auto imu_ang_velocity = robot->imu->GetAccelerometer();
+  auto imu_gyroscope = robot->imu->GetGyroscope();
+  auto imu_accelero = robot->imu->GetAccelerometer();
   auto imu_linear_acc = robot->imu->GetLinearAcceleration();
   auto imu_euler = robot->imu->GetAttitudeEuler();
   auto imu_quater = robot->imu->GetAttitudeQuaternion();
 
-
-  /*IMUSensor::orientation_ = robot->imu->GetGyroscope();
-  IMUSensor::angular_velocity_ = robot->imu->GetAccelerometer();
-  IMUSensor::linear_acceleration_ = robot->imu->GetLinearAcceleration();*/
 
   // Assignment of sensor data to ros2_control variables
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
@@ -538,19 +534,16 @@ hardware_interface::return_type SystemBoltHardware::read()
     hw_states_[joint.name].effort = measured_torques[joint_name_to_motor_nb[joint.name]];
     hw_states_[joint.name].Kp = kp;
     hw_states_[joint.name].Kd = kd;
-    /*imu_states_.imu_gyro = imu_gyroscope;
-    imu_states_["IMU"].angular_velocity = imu_accelerometer;
-    imu_states_["IMU"].linear_acceleration = imu_linear_acceleration;*/
   }
 
   for (const hardware_interface::ComponentInfo & sensor : info_.sensors) {
-    imu_states_[sensor.name].gyro[0] = imu_orientation[0];
-    imu_states_[sensor.name].gyro[1] = imu_orientation[1];
-    imu_states_[sensor.name].gyro[2] = imu_orientation[2];
+    imu_states_[sensor.name].gyro[0] = imu_gyroscope[0];
+    imu_states_[sensor.name].gyro[1] = imu_gyroscope[1];
+    imu_states_[sensor.name].gyro[2] = imu_gyroscope[2];
 
-    imu_states_[sensor.name].accelero[0] = imu_ang_velocity[0];
-    imu_states_[sensor.name].accelero[1] = imu_ang_velocity[1];
-    imu_states_[sensor.name].accelero[2] = imu_ang_velocity[2];
+    imu_states_[sensor.name].accelero[0] = imu_accelero[0];
+    imu_states_[sensor.name].accelero[1] = imu_accelero[1];
+    imu_states_[sensor.name].accelero[2] = imu_accelero[2];
 
     imu_states_[sensor.name].line_acc[0] = imu_linear_acc[0];
     imu_states_[sensor.name].line_acc[1] = imu_linear_acc[1];
@@ -564,114 +557,12 @@ hardware_interface::return_type SystemBoltHardware::read()
     imu_states_[sensor.name].quater[1] = imu_quater[1];
     imu_states_[sensor.name].quater[2] = imu_quater[2];
     imu_states_[sensor.name].quater[3] = imu_quater[3];
-
-
   }
-
-
-  
-
-/*
 
   // RCLCPP_INFO(
   //rclcpp::get_logger("SystemBoltHardware"),
   //"Joints sucessfully read!");
 
-
-*/
-
-  /*
-
-
-
-
-    // Cf ros2_control/controller_interface/include/semantic_components/imu_sensor.hpp 
-    //IMU quaternion
-    //x
-    interface_names_.emplace_back(name_ + "/" + "orientation.x") = robot.get_base_attitude_quaternion(0,0);
-    //y
-    interface_names_.emplace_back(name_ + "/" + "orientation.y") = robot.get_base_attitude_quaternion(1,0);
-    //z
-    interface_names_.emplace_back(name_ + "/" + "orientation.z") = robot.get_base_attitude_quaternion(2,0);
-    //w
-    interface_names_.emplace_back(name_ + "/" + "orientation.w") = robot.get_base_attitude_quaternion(3,0);
-
-
-    //IMU attitude
-    robot.get_base_attitude();
-
-    //IMU accelerometer
-    robot.get_base_accelerometer();
-
-    //IMU gyroscope
-    robot.get_base_gyroscope();
-
-    //IMU linear acceleration
-    for (size_t i = 0; i < linear_acceleration_.size(); ++i) {
-      linear_acceleration_[i] = state_interfaces_[interface_offset + i].get().get_value();
-    }
-    interface_names_.emplace_back(name_ + "/" + "linear_acceleration.x") = robot.get_base_linear_acceleration(0,0);
-    interface_names_.emplace_back(name_ + "/" + "linear_acceleration.y") = robot.get_base_linear_acceleration(1,0);
-    interface_names_.emplace_back(name_ + "/" + "linear_acceleration.z") = robot.get_base_linear_acceleration(2,0);
-  }*/
-
-
-/*
-
-  // RCLCPP_INFO(
-  //   rclcpp::get_logger("SystemBoltHardware"),
-  //   "Reading...");
-  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-    switch(control_mode_[joint.name]) {
-    case control_mode_t::POS_VEL_EFF_GAINS:
-      // Simulate Bolt's PD+ computation
-      hw_states_[joint.name].effort = hw_commands_[joint.name].effort +
-	hw_commands_[joint.name].Kp*
-	(hw_states_[joint.name].position -
-	 hw_commands_[joint.name].position) +
-	hw_commands_[joint.name].Kd*
-	(hw_states_[joint.name].velocity -
-	 hw_commands_[joint.name].velocity);
-      break;
-    case control_mode_t::POSITION:
-      hw_states_[joint.name].position =
-	hw_commands_[joint.name].position;
-      break;
-    case control_mode_t::VELOCITY:
-      hw_states_[joint.name].position =
-	hw_states_[joint.name].position +
-	hw_slowdown_ * hw_states_[joint.name].velocity;
-      hw_states_[joint.name].velocity =
-	hw_commands_[joint.name].velocity;
-      break;
-    case control_mode_t::EFFORT:
-      hw_states_[joint.name].effort =
-	hw_commands_[joint.name].effort;
-      break;
-    case control_mode_t::NO_VALID_MODE:
-      hw_states_[joint.name].effort = 0.0;
-      break;
-    }
-    //
-    // RCLCPP_INFO(
-    //   rclcpp::get_logger("SystemBoltHardware"),
-    //   "Got state (%.5f,%.5f,%.5f) for joint %d!",
-    //   hw_states_[i].position, hw_states_[i].velocity,
-    //   hw_states_[i].effort, i);
-
-    RCLCPP_INFO(
-      rclcpp::get_logger("SystemBoltHardware"),
-      "Got state (%.5f,%.5f,%.5f) for joint %d!",
-      hw_states_[joint.name].position, hw_states_[joint.name].velocity,
-      hw_states_[joint.name].effort, joint_name_to_motor_nb[joint.name]);
-
-    
-  }
-
-  RCLCPP_INFO(
-    rclcpp::get_logger("SystemBoltHardware"),
-    "Joints sucessfully read!");
-*/
   return return_type::OK;
 }
 
