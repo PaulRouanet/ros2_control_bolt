@@ -221,6 +221,8 @@ private:
   double max_currents = 12.;
   double max_joint_velocities = 80.;
   double safety_damping = 0.5;
+  double kp;
+  double kd;
 
 };
 

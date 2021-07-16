@@ -85,6 +85,17 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   // Define the robot (ODRI).
   robot = std::make_shared<Robot>(main_board_ptr_, joints, imu);
 
+  //Definition of Kp and Kd :
+  std::cout << "Enter Kp value (3 in casual use) : ";
+  std::cin >> kp;
+  std::cout << "Kp = " << kp;
+  std::cout << "\n" << std::endl;
+  
+  std::cout << "Enter Kd value (0.05 in casual use) : ";
+  std::cin >> kd;
+  std::cout << "Kd = " << kd;
+  std::cout << "\n" << std::endl;
+
 /*
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
     //Données des joints
@@ -517,6 +528,8 @@ hardware_interface::return_type SystemBoltHardware::read()
     hw_states_[joint.name].position = sensor_positions[joint_name_to_motor_nb[joint.name]];
     hw_states_[joint.name].velocity = sensor_velocities[joint_name_to_motor_nb[joint.name]];
     hw_states_[joint.name].effort = measured_torques[joint_name_to_motor_nb[joint.name]];
+    hw_states_[joint.name].Kp = kp;
+    hw_states_[joint.name].Kd = kd;
     /*imu_states_["IMU"].orientation = imu_gyroscope;
     imu_states_["IMU"].angular_velocity = imu_accelerometer;
     imu_states_["IMU"].linear_acceleration = imu_linear_acceleration;*/
