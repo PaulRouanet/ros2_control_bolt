@@ -3,17 +3,20 @@
 
 
 
-#include <system_bolt.hpp>
+#include "system_bolt.hpp"
 
 #include <odri_control_interface/utils.hpp>
 #include <odri_control_interface/imu.hpp>
 
 
 using namespace odri_control_interface;
+using namespace ros2_control_bolt;
 
 #include <iostream>
 #include <stdexcept>
 
+const hardware_interface::HardwareInfo info_test;
+std::shared_ptr<odri_control_interface::Robot> robot;
 
 int main(int argc, char **argv)
 {
@@ -26,10 +29,13 @@ int main(int argc, char **argv)
 
     nice(-20);  // Give the process a high priority.
 
-    //configure()
+    
+
+    SystemBoltHardware::init_robot(info_test, robot);
+    SystemBoltHardware::configure(info_test);
 
     // Start the robot.
-    robot->Start();
+    SystemBoltHardware::start();
 
 
     int c = 0;
@@ -42,7 +48,7 @@ int main(int argc, char **argv)
             last = std::chrono::system_clock::now();  // last+dt would be better
             robot->ParseSensorData();
 
-            c++;
+            /*c++;
             if (c % 1000 == 0)
             {
                 std::cout << "Count :                        " << c << "\n";
@@ -81,7 +87,7 @@ int main(int argc, char **argv)
                 std::cout << "\n";
                 std::cout << std::endl;
                 
-            }
+            }*/
         }
         else
         {
