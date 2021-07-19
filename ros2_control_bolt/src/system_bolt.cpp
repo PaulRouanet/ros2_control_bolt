@@ -554,6 +554,7 @@ hardware_interface::return_type SystemBoltHardware::read()
   }
   
   // Assignment of IMU data (URDF)
+  // Modif with for loop possible to optimize the code
   imu_states_["IMU"].gyro[0] = imu_gyroscope[0];
   imu_states_["IMU"].gyro[1] = imu_gyroscope[1];
   imu_states_["IMU"].gyro[2] = imu_gyroscope[2];
