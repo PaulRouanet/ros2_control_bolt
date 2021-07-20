@@ -143,7 +143,7 @@ public:
   return_type configure(const hardware_interface::HardwareInfo & info) override;
 
   ROS2_CONTROL_BOLT_PUBLIC
-  return_type init_robot(const hardware_interface::HardwareInfo & info, std::shared_ptr<odri_control_interface::Robot> & robot);
+  return_type init_robot(const hardware_interface::HardwareInfo & info);
 
   ROS2_CONTROL_BOLT_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;

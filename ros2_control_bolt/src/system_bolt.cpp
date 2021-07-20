@@ -50,7 +50,7 @@ Eigen::Vector6d desired_joint_position = Eigen::Vector6d::Zero();
 Eigen::Vector6d desired_torque = Eigen::Vector6d::Zero();
 
 
-return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info, std::shared_ptr<odri_control_interface::Robot> & robot)
+return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info)
 {
   /*Définir le robot (ODRI) à partir des variables de l'URDF*/
 
