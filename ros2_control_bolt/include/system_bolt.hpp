@@ -208,7 +208,7 @@ private:
   char **argv;
 
   //Joints constants
-  std::shared_ptr<odri_control_interface::Robot> robot;
+  std::shared_ptr<odri_control_interface::Robot> robot_;
 
   double motor_constants = 0.025;
   double gear_ratios = 9.;

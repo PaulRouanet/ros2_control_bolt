@@ -85,7 +85,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
       main_board_ptr_, rotate_vector, orientation_vector);
   
   // Define the robot (ODRI).
-  robot = std::make_shared<Robot>(main_board_ptr_, joints, imu);
+  robot_ = std::make_shared<Robot>(main_board_ptr_, joints, imu);
 
   //Definition of Kp and Kd :
   std::cout << "Enter Kp value (3 in casual use) : ";
@@ -430,7 +430,7 @@ SystemBoltHardware::export_command_interfaces()
 
 return_type SystemBoltHardware::start()
 {
-  robot->Start();
+  robot_->Start();
 
   // set some default values
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
@@ -531,17 +531,17 @@ hardware_interface::return_type SystemBoltHardware::read()
   //"Reading...");
 
   // Data acquisition (with ODRI)
-  robot->ParseSensorData();
+  robot_->ParseSensorData();
 
-  auto sensor_positions = robot->joints->GetPositions();
-  auto sensor_velocities = robot->joints->GetVelocities();
-  auto measured_torques = robot->joints->GetMeasuredTorques();
+  auto sensor_positions = robot_->joints->GetPositions();
+  auto sensor_velocities = robot_->joints->GetVelocities();
+  auto measured_torques = robot_->joints->GetMeasuredTorques();
    
-  auto imu_gyroscope = robot->imu->GetGyroscope();
-  auto imu_accelero = robot->imu->GetAccelerometer();
-  auto imu_linear_acc = robot->imu->GetLinearAcceleration();
-  auto imu_euler = robot->imu->GetAttitudeEuler();
-  auto imu_quater = robot->imu->GetAttitudeQuaternion();
+  auto imu_gyroscope = robot_->imu->GetGyroscope();
+  auto imu_accelero = robot_->imu->GetAccelerometer();
+  auto imu_linear_acc = robot_->imu->GetLinearAcceleration();
+  auto imu_euler = robot_->imu->GetAttitudeEuler();
+  auto imu_quater = robot_->imu->GetAttitudeQuaternion();
 
 
   // Assignment of sensor data to ros2_control variables (URDF)
@@ -611,12 +611,12 @@ SystemBoltHardware::write()
   double dt = 0.001;
   std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
 
-  while (!robot->IsTimeout()) {
+  while (!robot_->IsTimeout()) {
     if (((std::chrono::duration<double>)(std::chrono::system_clock::now()-last)).count() > 0.001) {
       
       last = std::chrono::system_clock::now();  // last+dt would be better
 
-      if (robot->IsReady()) {
+      if (robot_->IsReady()) {
         
         // Control law        
         /*positions = ...;
@@ -631,11 +631,11 @@ SystemBoltHardware::write()
           gain_KD[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].Kd;
         }
 
-        robot->joints->SetDesiredPositions(positions);
-        robot->joints->SetDesiredVelocities(velocities);
-        robot->joints->SetTorques(torques);
-        robot->joints->SetPositionGains(gain_KP);
-        robot->joints->SetVelocityGains(gain_KD);
+        robot_->joints->SetDesiredPositions(positions);
+        robot_->joints->SetDesiredVelocities(velocities);
+        robot_->joints->SetTorques(torques);
+        robot_->joints->SetPositionGains(gain_KP);
+        robot_->joints->SetVelocityGains(gain_KD);
           
       }
 
@@ -643,7 +643,7 @@ SystemBoltHardware::write()
         //Chose à faire si le robot n'est pas Ready
       }
     }
-    robot->SendCommand();
+    robot_->SendCommand();
   }
 
 
