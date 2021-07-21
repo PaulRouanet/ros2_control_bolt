@@ -210,11 +210,11 @@ private:
   //robot 
   std::shared_ptr<odri_control_interface::Robot> robot_;
 
-  double motor_constants_ = 0.025;
-  double gear_ratios_ = 9.;
-  double max_currents_ = 12.;
-  double max_joint_velocities_ = 80.;
-  double safety_damping_ = 0.5;
+  double motor_constants_;
+  double gear_ratios_;
+  double max_currents_;
+  double max_joint_velocities_;
+  double safety_damping_;
   double kp_;
   double kd_;
 
