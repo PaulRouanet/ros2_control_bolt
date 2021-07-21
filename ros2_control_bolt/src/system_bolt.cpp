@@ -113,16 +113,6 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
 
   kp_ = 0.0;
   kd_ = 0.0;
-  //Definition of Kp and Kd :
-  /*std::cout << "Enter Kp value (3 in casual use) : ";
-  std::cin >> kp_;
-  std::cout << "Kp = " << kp_;
-  std::cout << "\n" << std::endl;
-
-  std::cout << "Enter Kd value (0.05 in casual use) : ";
-  std::cin >> kd_;
-  std::cout << "Kd = " << kd_;
-  std::cout << "\n" << std::endl;*/
 
 /*
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
@@ -513,8 +503,32 @@ return_type SystemBoltHardware::start()
 return_type SystemBoltHardware::stop()
 {
   // Set 0 values to commands
-  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+  /*for (const hardware_interface::ComponentInfo & joint : info_.joints) {
     hw_commands_[joint.name] = {0.0, 0.0, 0.0, 0.0, 0.0};
+  }*/
+
+  // Put torques to 0.0
+  Eigen::Vector6d torques;
+
+  double t = 0.0;
+  double dt = 0.001;
+  std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
+
+  while (!robot_->IsTimeout()) {
+    if (((std::chrono::duration<double>)(std::chrono::system_clock::now()-last)).count() > 0.001) {
+      
+      last = std::chrono::system_clock::now();  // last+dt would be better
+
+      t += dt;
+        
+      for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+        torques[joint_name_to_motor_nb_[joint.name]] = 0.0;
+      }
+
+      robot_->joints->SetTorques(torques);
+             
+    }
+    robot_->SendCommand();
   }
 
 
