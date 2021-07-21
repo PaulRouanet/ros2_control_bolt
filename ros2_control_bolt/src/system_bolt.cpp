@@ -52,18 +52,15 @@ Eigen::Vector6d desired_torque = Eigen::Vector6d::Zero();
 
 return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info)
 {
+  //Define the ODRI robot from URDF values
+
   // Get the ethernet interface to discuss with the ODRI master board
   eth_interface_ = info_.hardware_parameters.at("eth_interface");
-
-
-  
-  /*Définir le robot (ODRI) à partir des variables de l'URDF*/
-
+ 
   // Define board (ODRI)
   auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(eth_interface_);
 
   // Define joints (ODRI)
-  
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
     // Motor numbers
     motor_numbers_[joint_name_to_motor_nb_[joint.name]] = stoi(joint.parameters.at("motor_number"));
@@ -101,7 +98,6 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   for (const hardware_interface::ComponentInfo & sensor : info.sensors) {
     std::istringstream iss_rotate (sensor.parameters.at("rotate_vector"));
     std::istringstream iss_orientation (sensor.parameters.at("orientation_vector"));
-
     for (int n=0; n<3; n++){
       iss_rotate >> rotate_vector_[n];
     }
@@ -109,7 +105,6 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
       iss_orientation >> orientation_vector_[n];
     }
   }
-
   auto imu = std::make_shared<IMU>(
       main_board_ptr_, rotate_vector_, orientation_vector_);
 
@@ -121,30 +116,8 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   kp_ = 0.0;
   kd_ = 0.0;
 
-/*
-  for (const hardware_interface::ComponentInfo & joint : info.joints) {
-    //Données des joints
-    //Sorties (commandes)
-    joint.command_interfaces;
-    //Entrées (états)
-    joint.state_interfaces;
-    
-  }
-
-  for (const hardware_interface::ComponentInfo & sensor : info.sensors) {
-    //Données des capteurs
-    //Entrées (états)
-    sensor.state_interfaces;
-  }
-
-    */
-
 return return_type::OK;
 }
-
-
-
-
 
 
 
