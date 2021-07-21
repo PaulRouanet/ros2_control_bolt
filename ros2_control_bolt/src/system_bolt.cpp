@@ -64,16 +64,25 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
 
   // Define joints (ODRI)
   
-  motor_numbers_ = Eigen::Vector6i::Zero();
-  //motor_numbers_[0] = std::__cxx11::stoi(info_.hardware_parameters["motor_numbers"][0]);
-
-  //stod(info_.hardware_parameters["example_param_hw_slowdown"])
-  motor_reversed_polarities_ << true, false, true, true, false, false;
-  
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
-    // Joint lower and upper limits
+    // Motor numbers
+    motor_numbers_[joint_name_to_motor_nb_[joint.name]] = stoi(joint.parameters.at("motor_number"));
+    // Reversed polarities
+    if (joint.parameters.at("motor_reversed_polarity") == "true"){
+      motor_reversed_polarities_[joint_name_to_motor_nb_[joint.name]] = true;
+    }
+    else {
+      motor_reversed_polarities_[joint_name_to_motor_nb_[joint.name]] = false;
+    }
+    // Joint parameters
     joint_lower_limits_[joint_name_to_motor_nb_[joint.name]] = stod(joint.command_interfaces[0].min);   //Modif d'après lecture des capteurs (demo bolt)
     joint_upper_limits_[joint_name_to_motor_nb_[joint.name]] = stod(joint.command_interfaces[0].max);   //Modif d'après lecture des capteurs (demo bolt)
+    
+    motor_constants_ = stod(joint.parameters.at("motor_constant"));
+    gear_ratios_ = stod(joint.parameters.at("gear_ratio"));
+    max_currents_ = stod(joint.parameters.at("max_current"));
+    max_joint_velocities_ = stod(joint.parameters.at("max_joint_velocity"));
+    safety_damping_ = stod(joint.parameters.at("safety_damping"));
   }
 
   auto joints = std::make_shared<JointModules>(main_board_ptr_,
@@ -97,7 +106,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   robot_ = std::make_shared<Robot>(main_board_ptr_, joints, imu);
 
   //Definition of Kp and Kd :
-  std::cout << "Enter Kp value (3 in casual use) : ";
+  /*std::cout << "Enter Kp value (3 in casual use) : ";
   std::cin >> kp_;
   std::cout << "Kp = " << kp_;
   std::cout << "\n" << std::endl;
@@ -105,7 +114,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   std::cout << "Enter Kd value (0.05 in casual use) : ";
   std::cin >> kd_;
   std::cout << "Kd = " << kd_;
-  std::cout << "\n" << std::endl;
+  std::cout << "\n" << std::endl;*/
 
 /*
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
