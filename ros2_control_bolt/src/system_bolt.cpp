@@ -52,13 +52,21 @@ Eigen::Vector6d desired_torque = Eigen::Vector6d::Zero();
 
 return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info)
 {
+  argv_ = info_.hardware_parameters["argv"];
+
+
+  
   /*Définir le robot (ODRI) à partir des variables de l'URDF*/
 
   // Define board (ODRI)
-  auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(argv[1]);
+  auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(argv_);
 
   // Define joints (ODRI)
-  motor_numbers << 0, 3, 2, 1, 5, 4;
+  
+  Eigen::Vector6d motor_numbers_ = Eigen::Vector6d::Zero();
+  //motor_numbers_[0] = std::__cxx11::stoi(info_.hardware_parameters["motor_numbers"][0]);
+
+  //stod(info_.hardware_parameters["example_param_hw_slowdown"])
   motor_reversed_polarities << true, false, true, true, false, false;
   
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
@@ -68,7 +76,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   }
 
   auto joints = std::make_shared<JointModules>(main_board_ptr_,
-                                               motor_numbers,
+                                               motor_numbers_,
                                                motor_constants,
                                                gear_ratios,
                                                max_currents,

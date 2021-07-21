@@ -205,9 +205,9 @@ private:
   
 
   //Network id
-  char **argv;
+  char argv_;
 
-  //Joints constants
+  //robot 
   std::shared_ptr<odri_control_interface::Robot> robot_;
 
   double motor_constants = 0.025;
