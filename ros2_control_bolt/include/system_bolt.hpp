@@ -210,6 +210,7 @@ private:
 
   //robot 
   std::shared_ptr<odri_control_interface::Robot> robot_;
+  
 
   double motor_constants_;
   double gear_ratios_;

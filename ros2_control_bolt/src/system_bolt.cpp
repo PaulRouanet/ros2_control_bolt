@@ -58,7 +58,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   eth_interface_ = info_.hardware_parameters.at("eth_interface");
  
   // Define board (ODRI)
-  auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(eth_interface_);
+  auto main_board_ptr = std::make_shared<MasterBoardInterface>(eth_interface_);
 
   // Define joints (ODRI)
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
@@ -82,7 +82,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
     safety_damping_ = stod(joint.parameters.at("safety_damping"));
   }
 
-  auto joints = std::make_shared<JointModules>(main_board_ptr_,
+  auto joints = std::make_shared<JointModules>(main_board_ptr,
                                                motor_numbers_,
                                                motor_constants_,
                                                gear_ratios_,
@@ -106,11 +106,11 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
     }
   }
   auto imu = std::make_shared<IMU>(
-      main_board_ptr_, rotate_vector_, orientation_vector_);
+      main_board_ptr, rotate_vector_, orientation_vector_);
 
 
   // Define the robot (ODRI).
-  robot_ = std::make_shared<Robot>(main_board_ptr_, joints, imu);
+  robot_ = std::make_shared<Robot>(main_board_ptr, joints, imu);
 
   // Initialize gains
   kp_ = 0.0;
