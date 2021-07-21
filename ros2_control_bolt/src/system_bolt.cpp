@@ -111,6 +111,8 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   // Define the robot (ODRI).
   robot_ = std::make_shared<Robot>(main_board_ptr_, joints, imu);
 
+  kp_ = 0.0;
+  kd_ = 0.0;
   //Definition of Kp and Kd :
   /*std::cout << "Enter Kp value (3 in casual use) : ";
   std::cin >> kp_;
