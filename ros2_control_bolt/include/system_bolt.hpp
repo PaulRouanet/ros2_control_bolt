@@ -18,6 +18,7 @@
 /*Connection to ODRI for read sensors and write commands*/
 #include "odri_control_interface/calibration.hpp"
 #include "odri_control_interface/robot.hpp"
+#include "odri_control_interface/imu.hpp"
 
 
 
