@@ -49,7 +49,7 @@
         <param name="max_current">12.</param>
         <param name="max_joint_velocity">80.</param>
         <param name="safety_damping">0.5</param>
-        <param name="motor_reversed_polarity">true</param>
+        <param name="motor_reversed_polarity">${true}</param>
       </joint>
       <joint name="FLHFE">
         <command_interface name="position">
@@ -73,7 +73,7 @@
         <param name="max_current">12.</param>
         <param name="max_joint_velocity">80.</param>
         <param name="safety_damping">0.5</param>
-        <param name="motor_reversed_polarity">false</param>
+        <param name="motor_reversed_polarity">${true}</param>
       </joint>
       <joint name="FLK">
         <command_interface name="position">
@@ -97,7 +97,7 @@
         <param name="max_current">12.</param>
         <param name="max_joint_velocity">80.</param>
         <param name="safety_damping">0.5</param>
-        <param name="motor_reversed_polarity">true</param>
+        <param name="motor_reversed_polarity">${true}</param>
       </joint>
       <joint name="FRHAA">
         <command_interface name="position">
@@ -121,7 +121,7 @@
         <param name="max_current">12.</param>
         <param name="max_joint_velocity">80.</param>
         <param name="safety_damping">0.5</param>
-        <param name="motor_reversed_polarity">true</param>
+        <param name="motor_reversed_polarity">${true}</param>
       </joint>
       <joint name="FRHFE">
         <command_interface name="position">
@@ -145,7 +145,7 @@
         <param name="max_current">12.</param>
         <param name="max_joint_velocity">80.</param>
         <param name="safety_damping">0.5</param>
-        <param name="motor_reversed_polarity">false</param>
+        <param name="motor_reversed_polarity">${false}</param>
       </joint>
       <joint name="FRK">
         <command_interface name="position">
@@ -164,7 +164,7 @@
         <param name="max_current">12.</param>
         <param name="max_joint_velocity">80.</param>
         <param name="safety_damping">0.5</param>
-        <param name="motor_reversed_polarity">false</param>
+        <param name="motor_reversed_polarity">${false}</param>
       </joint>
       <sensor name="IMU">
         <state_interface name="gyroscope"/>
