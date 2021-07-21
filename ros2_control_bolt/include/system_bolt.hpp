@@ -82,12 +82,6 @@ namespace ros2_control_bolt
 {
 
 
-
-/**
- * @brief This boolean is here to kill cleanly the application upon ctrl+c
- */
-//std::atomic_bool CTRL_C_DETECTED(false);
-
 struct PosVelEffortGains
 {
   double position;
