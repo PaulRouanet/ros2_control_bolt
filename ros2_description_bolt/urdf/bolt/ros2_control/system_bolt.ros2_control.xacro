@@ -23,13 +23,6 @@
             <param name="example_param_hw_stop_duration_sec">3.0</param>
             <param name="example_param_hw_slowdown">${slowdown}</param>
             <param name="eth_interface">${enp3s0}</param>
-            <param name="motor_numbers">"0 3 2 1 5 4"</param>
-            <param name="motor_reversed_polarities">"true false true true false false"</param>
-            <param name="motor_constants">0.025</param>
-            <param name="gear_ratios">9.</param>
-            <param name="max_currents">12.</param>
-            <param name="max_joint_velocities">80.</param>
-            <param name="safety_damping">0.5</param>
             </xacro:unless>
         </hardware>
       </xacro:unless>
@@ -51,6 +44,12 @@
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
         <param name="motor_number">0</param>
+        <param name="gear_ratio">9.</param>
+        <param name="motor_constant">0.025</param>
+        <param name="max_current">12.</param>
+        <param name="max_joint_velocity">80.</param>
+        <param name="safety_damping">0.5</param>
+        <param name="motor_reversed_polarity">true</param>
       </joint>
       <joint name="FLHFE">
         <command_interface name="position">
@@ -69,6 +68,12 @@
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>*
         <param name="motor_number">1</param>
+        <param name="gear_ratio">9.</param>
+        <param name="motor_constant">0.025</param>
+        <param name="max_current">12.</param>
+        <param name="max_joint_velocity">80.</param>
+        <param name="safety_damping">0.5</param>
+        <param name="motor_reversed_polarity">false</param>
       </joint>
       <joint name="FLK">
         <command_interface name="position">
@@ -87,6 +92,12 @@
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
         <param name="motor_number">2</param>
+        <param name="gear_ratio">9.</param>
+        <param name="motor_constant">0.025</param>
+        <param name="max_current">12.</param>
+        <param name="max_joint_velocity">80.</param>
+        <param name="safety_damping">0.5</param>
+        <param name="motor_reversed_polarity">true</param>
       </joint>
       <joint name="FRHAA">
         <command_interface name="position">
@@ -105,6 +116,12 @@
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
         <param name="motor_number">3</param>
+        <param name="gear_ratio">9.</param>
+        <param name="motor_constant">0.025</param>
+        <param name="max_current">12.</param>
+        <param name="max_joint_velocity">80.</param>
+        <param name="safety_damping">0.5</param>
+        <param name="motor_reversed_polarity">true</param>
       </joint>
       <joint name="FRHFE">
         <command_interface name="position">
@@ -123,6 +140,12 @@
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
         <param name="motor_number">4</param>
+        <param name="gear_ratio">9.</param>
+        <param name="motor_constant">0.025</param>
+        <param name="max_current">12.</param>
+        <param name="max_joint_velocity">80.</param>
+        <param name="safety_damping">0.5</param>
+        <param name="motor_reversed_polarity">false</param>
       </joint>
       <joint name="FRK">
         <command_interface name="position">
@@ -136,6 +159,12 @@
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
         <param name="motor_number">5</param>
+        <param name="gear_ratio">9.</param>
+        <param name="motor_constant">0.025</param>
+        <param name="max_current">12.</param>
+        <param name="max_joint_velocity">80.</param>
+        <param name="safety_damping">0.5</param>
+        <param name="motor_reversed_polarity">false</param>
       </joint>
       <sensor name="IMU">
         <state_interface name="gyroscope"/>
