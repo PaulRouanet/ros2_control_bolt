@@ -99,6 +99,12 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   // Define the IMU (ODRI).
   rotate_vector_ << 1, 2, 3;
   orientation_vector_ << 1, 2, 3, 4;
+
+  /*for (const hardware_interface::ComponentInfo & sensor : info.sensors) {
+    rotate_vector_ = stol(sensor.parameters.at("rotate_vector"));
+    //orientation_vector_ = sensor.parameters.at("orientation_vector");
+  }*/
+
   auto imu = std::make_shared<IMU>(
       main_board_ptr_, rotate_vector_, orientation_vector_);
   
