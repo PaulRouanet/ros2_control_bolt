@@ -495,19 +495,16 @@ return_type SystemBoltHardware::stop()
   std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
 
   while (!robot_->IsTimeout()) {
-    if (((std::chrono::duration<double>)(std::chrono::system_clock::now()-last)).count() > 0.001) {
-      
-      last = std::chrono::system_clock::now();  // last+dt would be better
-
-      t += dt;
         
-      for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-        torques[joint_name_to_motor_nb_[joint.name]] = 0.0;
-      }
+    last = std::chrono::system_clock::now();  // last+dt would be better
 
-      robot_->joints->SetTorques(torques);
-             
+    t += dt;
+        
+    for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+      torques[joint_name_to_motor_nb_[joint.name]] = 0.0;
     }
+
+    robot_->joints->SetTorques(torques);
     robot_->SendCommand();
   }
 
