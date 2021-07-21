@@ -172,6 +172,8 @@
         <state_interface name="linear_acceleration"/>
         <state_interface name="attitude_euler"/>
         <state_interface name="attitude_quaternion"/>
+        <param name="rotate_vector">"1 2 3"</param>
+        <param name="orientation_vector">"1 2 3 4"</param>
       </sensor>
     </ros2_control>
 
