@@ -22,6 +22,14 @@
             <param name="example_param_hw_start_duration_sec">2.0</param>
             <param name="example_param_hw_stop_duration_sec">3.0</param>
             <param name="example_param_hw_slowdown">${slowdown}</param>
+            <param name="argv">enp3s0</param>
+            <param name="motor_numbers">"0 3 2 1 5 4"</param>
+            <param name="motor_reversed_polarities">"true false true true false false"</param>
+            <param name="motor_constants">0.025</param>
+            <param name="gear_ratios">9.</param>
+            <param name="max_currents">12.</param>
+            <param name="max_joint_velocities">80.</param>
+            <param name="safety_damping">0.5</param>
             </xacro:unless>
         </hardware>
       </xacro:unless>
