@@ -82,7 +82,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
     safety_damping_ = stod(joint.parameters.at("safety_damping"));
   }
 
-  auto joints = std::make_shared<JointModules>(main_board_ptr,
+  auto joints_ = std::make_shared<JointModules>(main_board_ptr,
                                                motor_numbers_,
                                                motor_constants_,
                                                gear_ratios_,
@@ -93,6 +93,10 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
                                                max_joint_velocities_,
                                                safety_damping_);
 
+  // Get position offset of each joint
+    for (const hardware_interface::ComponentInfo & joint : info.joints) {
+      position_offsets_[joint_name_to_motor_nb_[joint.name]] = stod(joint.parameters.at("position_offset"));   //Modif d'après lecture des capteurs (demo bolt)
+    }
 
   // Define the IMU (ODRI).
   for (const hardware_interface::ComponentInfo & sensor : info.sensors) {
@@ -110,11 +114,13 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
 
 
   // Define the robot (ODRI).
-  robot_ = std::make_shared<Robot>(main_board_ptr, joints, imu);
+  robot_ = std::make_shared<Robot>(main_board_ptr, joints_, imu);
 
   // Initialize gains
   kp_ = 0.0;
   kd_ = 0.0;
+
+
 
 return return_type::OK;
 }
@@ -427,6 +433,42 @@ SystemBoltHardware::export_command_interfaces()
 return_type SystemBoltHardware::start()
 {
   robot_->Start();
+
+  // Calibration part
+  std::vector<CalibrationMethod> directions = {
+        AUTO, AUTO, AUTO, AUTO, AUTO, AUTO}; 
+  auto calib_ctrl = std::make_shared<JointCalibrator>(
+        joints_, directions, position_offsets_, 5., 0.05, 2., 0.001);
+  bool is_calibrated = false;
+  std::chrono::time_point<std::chrono::system_clock> last =
+        std::chrono::system_clock::now();
+  while (!robot_->IsTimeout())
+    {
+        if (((std::chrono::duration<double>)(std::chrono::system_clock::now()-last)).count() > 0.001)
+        {
+            if (robot_->IsReady())
+            {
+                if (!is_calibrated)
+                {
+                    is_calibrated = calib_ctrl->Run();
+                    if (is_calibrated)
+                    {
+                        std::cout << "Calibration is done." << std::endl;
+                    }
+                }
+            }
+
+            robot_->SendCommand();
+
+        }
+        else
+        {
+            std::this_thread::yield();
+        }
+    }
+
+
+
 
   // set some default values
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
