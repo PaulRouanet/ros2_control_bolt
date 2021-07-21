@@ -180,7 +180,7 @@ private:
   double hw_slowdown_;
 
   //Joint number from urdf
-  std::map<std::string,int> joint_name_to_motor_nb;
+  std::map<std::string,int> joint_name_to_motor_nb_;
 
   // Store the command for the simulated robot
   std::map<std::string,PosVelEffortGains> hw_commands_;
@@ -195,28 +195,28 @@ private:
 
   //Definition of multiple variables about Bolt
   // Joint
-  Eigen::Vector6i motor_numbers;
-  Eigen::Vector6b motor_reversed_polarities;
-  Eigen::Vector6d joint_lower_limits;
-  Eigen::Vector6d joint_upper_limits;
+  Eigen::Vector6i motor_numbers_;
+  Eigen::Vector6b motor_reversed_polarities_;
+  Eigen::Vector6d joint_lower_limits_;
+  Eigen::Vector6d joint_upper_limits_;
   // IMU
-  Eigen::Vector3l rotate_vector;
-  Eigen::Vector4l orientation_vector;
+  Eigen::Vector3l rotate_vector_;
+  Eigen::Vector4l orientation_vector_;
   
 
   //Network id
-  char argv_;
+  std::string eth_interface_;
 
   //robot 
   std::shared_ptr<odri_control_interface::Robot> robot_;
 
-  double motor_constants = 0.025;
-  double gear_ratios = 9.;
-  double max_currents = 12.;
-  double max_joint_velocities = 80.;
-  double safety_damping = 0.5;
-  double kp;
-  double kd;
+  double motor_constants_ = 0.025;
+  double gear_ratios_ = 9.;
+  double max_currents_ = 12.;
+  double max_joint_velocities_ = 80.;
+  double safety_damping_ = 0.5;
+  double kp_;
+  double kd_;
 
 };
 

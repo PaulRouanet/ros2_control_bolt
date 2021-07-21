@@ -52,58 +52,59 @@ Eigen::Vector6d desired_torque = Eigen::Vector6d::Zero();
 
 return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info)
 {
-  argv_ = info_.hardware_parameters["argv"];
+  // Get the ethernet interface to discuss with the ODRI master board
+  eth_interface_ = info_.hardware_parameters.at("eth_interface");
 
 
   
   /*Définir le robot (ODRI) à partir des variables de l'URDF*/
 
   // Define board (ODRI)
-  auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(argv_);
+  auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(eth_interface_);
 
   // Define joints (ODRI)
   
-  Eigen::Vector6d motor_numbers_ = Eigen::Vector6d::Zero();
+  motor_numbers_ = Eigen::Vector6i::Zero();
   //motor_numbers_[0] = std::__cxx11::stoi(info_.hardware_parameters["motor_numbers"][0]);
 
   //stod(info_.hardware_parameters["example_param_hw_slowdown"])
-  motor_reversed_polarities << true, false, true, true, false, false;
+  motor_reversed_polarities_ << true, false, true, true, false, false;
   
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
     // Joint lower and upper limits
-    joint_lower_limits[joint_name_to_motor_nb[joint.name]] = stod(joint.command_interfaces[0].min);   //Modif d'après lecture des capteurs (demo bolt)
-    joint_upper_limits[joint_name_to_motor_nb[joint.name]] = stod(joint.command_interfaces[0].max);   //Modif d'après lecture des capteurs (demo bolt)
+    joint_lower_limits_[joint_name_to_motor_nb_[joint.name]] = stod(joint.command_interfaces[0].min);   //Modif d'après lecture des capteurs (demo bolt)
+    joint_upper_limits_[joint_name_to_motor_nb_[joint.name]] = stod(joint.command_interfaces[0].max);   //Modif d'après lecture des capteurs (demo bolt)
   }
 
   auto joints = std::make_shared<JointModules>(main_board_ptr_,
                                                motor_numbers_,
-                                               motor_constants,
-                                               gear_ratios,
-                                               max_currents,
-                                               motor_reversed_polarities,
-                                               joint_lower_limits,
-                                               joint_upper_limits,
-                                               max_joint_velocities,
-                                               safety_damping);
+                                               motor_constants_,
+                                               gear_ratios_,
+                                               max_currents_,
+                                               motor_reversed_polarities_,
+                                               joint_lower_limits_,
+                                               joint_upper_limits_,
+                                               max_joint_velocities_,
+                                               safety_damping_);
 
   // Define the IMU (ODRI).
-  rotate_vector << 1, 2, 3;
-  orientation_vector << 1, 2, 3, 4;
+  rotate_vector_ << 1, 2, 3;
+  orientation_vector_ << 1, 2, 3, 4;
   auto imu = std::make_shared<IMU>(
-      main_board_ptr_, rotate_vector, orientation_vector);
+      main_board_ptr_, rotate_vector_, orientation_vector_);
   
   // Define the robot (ODRI).
   robot_ = std::make_shared<Robot>(main_board_ptr_, joints, imu);
 
   //Definition of Kp and Kd :
   std::cout << "Enter Kp value (3 in casual use) : ";
-  std::cin >> kp;
-  std::cout << "Kp = " << kp;
+  std::cin >> kp_;
+  std::cout << "Kp = " << kp_;
   std::cout << "\n" << std::endl;
 
   std::cout << "Enter Kd value (0.05 in casual use) : ";
-  std::cin >> kd;
-  std::cout << "Kd = " << kd;
+  std::cin >> kd_;
+  std::cout << "Kd = " << kd_;
   std::cout << "\n" << std::endl;
 
 /*
@@ -159,7 +160,7 @@ return_type SystemBoltHardware::configure(
 
     // Map joint with motor number
     // (uses at instead of [] because of joint constantness)
-    joint_name_to_motor_nb[joint.name] = stoi(joint.parameters.at("motor_number"));
+    joint_name_to_motor_nb_[joint.name] = stoi(joint.parameters.at("motor_number"));
     
     // Initialize state of the joint by default to NaN
     // it allows to see which joints are not properly initialized
@@ -554,11 +555,11 @@ hardware_interface::return_type SystemBoltHardware::read()
 
   // Assignment of sensor data to ros2_control variables (URDF)
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-    hw_states_[joint.name].position = sensor_positions[joint_name_to_motor_nb[joint.name]];
-    hw_states_[joint.name].velocity = sensor_velocities[joint_name_to_motor_nb[joint.name]];
-    hw_states_[joint.name].effort = measured_torques[joint_name_to_motor_nb[joint.name]];
-    hw_states_[joint.name].Kp = kp;
-    hw_states_[joint.name].Kd = kd;
+    hw_states_[joint.name].position = sensor_positions[joint_name_to_motor_nb_[joint.name]];
+    hw_states_[joint.name].velocity = sensor_velocities[joint_name_to_motor_nb_[joint.name]];
+    hw_states_[joint.name].effort = measured_torques[joint_name_to_motor_nb_[joint.name]];
+    hw_states_[joint.name].Kp = kp_;
+    hw_states_[joint.name].Kd = kd_;
   }
   
   // Assignment of IMU data (URDF)
@@ -592,17 +593,7 @@ hardware_interface::return_type SystemBoltHardware::read()
   return return_type::OK;
 }
 
-
-
-
-
-
-
-
-
-
 ////// WRITE
-
 
 hardware_interface::return_type
 SystemBoltHardware::write()
@@ -632,11 +623,11 @@ SystemBoltHardware::write()
         t += dt;
         
         for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-          positions[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].position;
-          velocities[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].velocity;
-          torques[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].effort;
-          gain_KP[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].Kp;
-          gain_KD[joint_name_to_motor_nb[joint.name]] = hw_commands_[joint.name].Kd;
+          positions[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].position;
+          velocities[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].velocity;
+          torques[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].effort;
+          gain_KP[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].Kp;
+          gain_KD[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].Kd;
         }
 
         robot_->joints->SetDesiredPositions(positions);
