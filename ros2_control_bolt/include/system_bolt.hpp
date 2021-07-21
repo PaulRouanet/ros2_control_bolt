@@ -194,6 +194,8 @@ private:
   Eigen::Vector6b motor_reversed_polarities_;
   Eigen::Vector6d joint_lower_limits_;
   Eigen::Vector6d joint_upper_limits_;
+  Eigen::Vector6d position_offsets_;
+
   // IMU
   Eigen::Vector3l rotate_vector_;
   Eigen::Vector4l orientation_vector_;
@@ -204,6 +206,7 @@ private:
 
   //robot 
   std::shared_ptr<odri_control_interface::Robot> robot_;
+  std::shared_ptr<odri_control_interface::JointModules> joints_;
   
 
   double motor_constants_;
