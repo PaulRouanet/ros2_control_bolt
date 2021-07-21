@@ -96,21 +96,28 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
                                                max_joint_velocities_,
                                                safety_damping_);
 
-  // Define the IMU (ODRI).
-  rotate_vector_ << 1, 2, 3;
-  orientation_vector_ << 1, 2, 3, 4;
 
-  /*for (const hardware_interface::ComponentInfo & sensor : info.sensors) {
-    rotate_vector_ = stol(sensor.parameters.at("rotate_vector"));
-    //orientation_vector_ = sensor.parameters.at("orientation_vector");
-  }*/
+  // Define the IMU (ODRI).
+  for (const hardware_interface::ComponentInfo & sensor : info.sensors) {
+    std::istringstream iss_rotate (sensor.parameters.at("rotate_vector"));
+    std::istringstream iss_orientation (sensor.parameters.at("orientation_vector"));
+
+    for (int n=0; n<3; n++){
+      iss_rotate >> rotate_vector_[n];
+    }
+    for (int n=0; n<4; n++){
+      iss_orientation >> orientation_vector_[n];
+    }
+  }
 
   auto imu = std::make_shared<IMU>(
       main_board_ptr_, rotate_vector_, orientation_vector_);
-  
+
+
   // Define the robot (ODRI).
   robot_ = std::make_shared<Robot>(main_board_ptr_, joints, imu);
 
+  // Initialize gains
   kp_ = 0.0;
   kd_ = 0.0;
 
