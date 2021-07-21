@@ -691,11 +691,12 @@ SystemBoltHardware::write()
         robot_->joints->SetVelocityGains(gain_KD);
           
       }
-
-      else {
-        //Chose à faire si le robot n'est pas Ready
-      }
     }
+    else
+        {
+            std::this_thread::yield();
+        }
+
     robot_->SendCommand();
   }
 
