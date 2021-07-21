@@ -435,10 +435,14 @@ return_type SystemBoltHardware::start()
   robot_->Start();
 
   // Calibration part
+  double Kp = 5.;
+  double Kd = 0.05;
+  double T = 2.0;
+  double dt = 0.001;
   std::vector<CalibrationMethod> directions = {
         AUTO, AUTO, AUTO, AUTO, AUTO, AUTO}; 
   auto calib_ctrl = std::make_shared<JointCalibrator>(
-        joints_, directions, position_offsets_, 5., 0.05, 2., 0.001);
+        joints_, directions, position_offsets_, Kp, Kd, T, dt);
   bool is_calibrated = false;
   std::chrono::time_point<std::chrono::system_clock> last =
         std::chrono::system_clock::now();
