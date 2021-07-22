@@ -150,7 +150,10 @@ public:
   return_type prepare_command_mode_switch(
     const std::vector<std::string> & start_interfaces,
     const std::vector<std::string> & stop_interfaces) override;
-
+  
+  ROS2_CONTROL_BOLT_PUBLIC
+  return_type calibration(const hardware_interface::HardwareInfo & info);
+  
   ROS2_CONTROL_BOLT_PUBLIC
   return_type start() override;
 
