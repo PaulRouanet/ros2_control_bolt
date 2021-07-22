@@ -217,8 +217,6 @@ private:
   double max_currents_;
   double max_joint_velocities_;
   double safety_damping_;
-  double kp_;
-  double kd_;
 
 };
 
