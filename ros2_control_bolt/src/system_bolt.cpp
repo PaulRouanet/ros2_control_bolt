@@ -423,7 +423,24 @@ SystemBoltHardware::export_command_interfaces()
 return_type SystemBoltHardware::calibration(
   const hardware_interface::HardwareInfo & info){
 
-    // Calibration part
+    double Kp = stod(info.hardware_parameters.at("calib_kp"));
+    double Kd = stod(info.hardware_parameters.at("calib_kd"));
+    double T = stod(info.hardware_parameters.at("calib_T"));
+    double dt = stod(info.hardware_parameters.at("calib_dt"));
+    std::vector<CalibrationMethod> directions = {
+        AUTO, AUTO, AUTO, AUTO, AUTO, AUTO}; 
+    auto calib_ctrl = std::make_shared<JointCalibrator>(
+        joints_, directions, position_offsets_, Kp, Kd, T, dt);
+
+    robot_->RunCalibration(calib_ctrl);
+
+
+
+
+
+
+
+    /*// Calibration part
     double Kp = stod(info.hardware_parameters.at("calib_kp"));
     double Kd = stod(info.hardware_parameters.at("calib_kd"));
     double T = stod(info.hardware_parameters.at("calib_T"));
@@ -459,7 +476,7 @@ return_type SystemBoltHardware::calibration(
             std::this_thread::yield();
         }
     }
-
+*/
     return return_type::OK;
   }
 
