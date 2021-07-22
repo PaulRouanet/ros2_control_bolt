@@ -56,6 +56,8 @@ find_package(rclcpp REQUIRED)
 find_package(hardware_interface REQUIRED)
 find_package(odri_control_interface REQUIRED)
 find_package(controller_interface REQUIRED)
+find_package(master_board_sdk REQUIRED)
+
 
 
 
@@ -174,6 +176,7 @@ macro(create_bolt_demo source)
   	pluginlib
   	rclcpp
   	odri_control_interface
+    master_board_sdk
 	)	
   install(TARGETS ${demo_name} DESTINATION bin)
 
