@@ -424,29 +424,24 @@ SystemBoltHardware::export_command_interfaces()
 
 
 
+//Calibration function
 
+return_type SystemBoltHardware::calibration(
+  const hardware_interface::HardwareInfo & info){
 
-
-
-// START
-
-return_type SystemBoltHardware::start()
-{
-  robot_->Start();
-
-  // Calibration part
-  double Kp = 5.;
-  double Kd = 0.05;
-  double T = 2.0;
-  double dt = 0.001;
-  std::vector<CalibrationMethod> directions = {
+    // Calibration part
+    double Kp = stod(info.hardware_parameters.at("calib_kp"));
+    double Kd = stod(info.hardware_parameters.at("calib_kd"));
+    double T = stod(info.hardware_parameters.at("calib_T"));
+    double dt = stod(info.hardware_parameters.at("calib_dt"));
+    std::vector<CalibrationMethod> directions = {
         AUTO, AUTO, AUTO, AUTO, AUTO, AUTO}; 
-  auto calib_ctrl = std::make_shared<JointCalibrator>(
+    auto calib_ctrl = std::make_shared<JointCalibrator>(
         joints_, directions, position_offsets_, Kp, Kd, T, dt);
-  bool is_calibrated = false;
-  std::chrono::time_point<std::chrono::system_clock> last =
+    bool is_calibrated = false;
+    std::chrono::time_point<std::chrono::system_clock> last =
         std::chrono::system_clock::now();
-  while (!robot_->IsTimeout())
+    while (!robot_->IsTimeout())
     {
         if (((std::chrono::duration<double>)(std::chrono::system_clock::now()-last)).count() > 0.001)
         {
@@ -471,9 +466,17 @@ return_type SystemBoltHardware::start()
         }
     }
 
+    return return_type::OK;
+  }
 
 
+// START
 
+return_type SystemBoltHardware::start()
+{
+  robot_->Start();
+
+  
   // set some default values
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
     if (std::isnan(hw_states_[joint.name].position)) {
@@ -538,7 +541,6 @@ return_type SystemBoltHardware::stop()
 
   while (!robot_->IsTimeout()) {
         
-       
     for (const hardware_interface::ComponentInfo & joint : info_.joints) {
       torques[joint_name_to_motor_nb_[joint.name]] = 0.0;
     }
