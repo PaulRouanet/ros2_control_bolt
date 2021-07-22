@@ -45,6 +45,8 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="kp"/>
+        <state_interface name="kd"/>
         <param name="motor_number">0</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -71,7 +73,9 @@
         <command_interface name="kd"/>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <state_interface name="acceleration"/>*
+        <state_interface name="acceleration"/>
+        <state_interface name="kp"/>
+        <state_interface name="kd"/>
         <param name="motor_number">3</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -99,6 +103,8 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="kp"/>
+        <state_interface name="kd"/>
         <param name="motor_number">2</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -126,6 +132,8 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="kp"/>
+        <state_interface name="kd"/>
         <param name="motor_number">1</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -153,6 +161,8 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="kp"/>
+        <state_interface name="kd"/>
         <param name="motor_number">5</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -176,6 +186,8 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="kp"/>
+        <state_interface name="kd"/>
         <param name="motor_number">4</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
