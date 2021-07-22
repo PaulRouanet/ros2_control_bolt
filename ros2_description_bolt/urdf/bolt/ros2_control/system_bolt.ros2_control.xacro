@@ -44,9 +44,19 @@
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
+        <command_interface name="gain_kp">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
+        <command_interface name="gain_kd">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="gain_kp"/>
+        <state_interface name="gain_kd"/>
         <param name="motor_number">0</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -55,8 +65,6 @@
         <param name="safety_damping">0.5</param>
         <param name="motor_reversed_polarity">${true}</param>
         <param name="position_offset">0.238</param>
-        <param name="kp">4.</param>
-        <param name="kd">0.04</param>
       </joint>
       <joint name="FLHFE">
         <command_interface name="position">
@@ -71,9 +79,19 @@
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
+        <command_interface name="gain_kp">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
+        <command_interface name="gain_kd">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="gain_kp"/>
+        <state_interface name="gain_kd"/>
         <param name="motor_number">3</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -82,8 +100,6 @@
         <param name="safety_damping">0.5</param>
         <param name="motor_reversed_polarity">${true}</param>
         <param name="position_offset">-0.308</param>
-        <param name="kp">4.</param>
-        <param name="kd">0.04</param>
       </joint>
       <joint name="FLK">
         <command_interface name="position">
@@ -98,9 +114,19 @@
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
+        <command_interface name="gain_kp">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
+        <command_interface name="gain_kd">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="gain_kp"/>
+        <state_interface name="gain_kd"/>
         <param name="motor_number">2</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -109,8 +135,6 @@
         <param name="safety_damping">0.5</param>
         <param name="motor_reversed_polarity">${true}</param>
         <param name="position_offset">0.276</param>
-        <param name="kp">4.</param>
-        <param name="kd">0.04</param>
       </joint>
       <joint name="FRHAA">
         <command_interface name="position">
@@ -125,9 +149,19 @@
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
+        <command_interface name="gain_kp">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
+        <command_interface name="gain_kd">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="gain_kp"/>
+        <state_interface name="gain_kd"/>
         <param name="motor_number">1</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -136,8 +170,6 @@
         <param name="safety_damping">0.5</param>
         <param name="motor_reversed_polarity">${true}</param>
         <param name="position_offset">-0.115</param>
-        <param name="kp">4.</param>
-        <param name="kd">0.04</param>
       </joint>
       <joint name="FRHFE">
         <command_interface name="position">
@@ -152,9 +184,19 @@
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
+        <command_interface name="gain_kp">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
+        <command_interface name="gain_kd">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="gain_kp"/>
+        <state_interface name="gain_kd"/>
         <param name="motor_number">5</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -163,8 +205,6 @@
         <param name="safety_damping">0.5</param>
         <param name="motor_reversed_polarity">${false}</param>
         <param name="position_offset">-0.584</param>
-        <param name="kp">4.</param>
-        <param name="kd">0.04</param>
       </joint>
       <joint name="FRK">
         <command_interface name="position">
@@ -179,9 +219,19 @@
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
+        <command_interface name="gain_kp">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
+        <command_interface name="gain_kd">
+          <param name="min">-1000</param>
+          <param name="max">1000</param>
+        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="acceleration"/>
+        <state_interface name="gain_kp"/>
+        <state_interface name="gain_kd"/>
         <param name="motor_number">4</param>
         <param name="gear_ratio">9.</param>
         <param name="motor_constant">0.025</param>
@@ -190,8 +240,6 @@
         <param name="safety_damping">0.5</param>
         <param name="motor_reversed_polarity">${false}</param>
         <param name="position_offset">0.432</param>
-        <param name="kp">4.</param>
-        <param name="kd">0.04</param>
       </joint>
       <sensor name="IMU">
         <state_interface name="gyroscope"/>
