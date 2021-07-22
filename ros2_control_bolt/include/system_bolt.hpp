@@ -19,6 +19,7 @@
 #include "odri_control_interface/calibration.hpp"
 #include "odri_control_interface/robot.hpp"
 #include "odri_control_interface/imu.hpp"
+#include "master_board_sdk/master_board_interface.h"
 
 
 
@@ -210,6 +211,7 @@ private:
   //robot 
   std::shared_ptr<odri_control_interface::Robot> robot_;
   std::shared_ptr<odri_control_interface::JointModules> joints_;
+  //std::shared_ptr<master_board_sdk::MasterBoardInterface> main_board_ptr_;
   
 
   double motor_constants_;
