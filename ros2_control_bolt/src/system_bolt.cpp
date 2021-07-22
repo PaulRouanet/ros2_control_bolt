@@ -660,8 +660,6 @@ SystemBoltHardware::write()
   Eigen::Vector6d gain_KD;
 
 
-  double t = 0.0;
-  double dt = 0.001;
   std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
 
   while (!robot_->IsTimeout()) {
@@ -674,7 +672,6 @@ SystemBoltHardware::write()
         // Control law        
         /*positions = ...;
         torques =  ...;*/
-        t += dt;
         
         for (const hardware_interface::ComponentInfo & joint : info_.joints) {
           positions[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].position;
