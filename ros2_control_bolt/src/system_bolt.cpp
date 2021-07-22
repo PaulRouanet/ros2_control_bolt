@@ -536,16 +536,12 @@ return_type SystemBoltHardware::stop()
   // Put torques to 0.0
   Eigen::Vector6d torques;
 
-  double t = 0.0;
-  double dt = 0.001;
   std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
 
   while (!robot_->IsTimeout()) {
         
     last = std::chrono::system_clock::now();  // last+dt would be better
-
-    t += dt;
-        
+       
     for (const hardware_interface::ComponentInfo & joint : info_.joints) {
       torques[joint_name_to_motor_nb_[joint.name]] = 0.0;
     }
