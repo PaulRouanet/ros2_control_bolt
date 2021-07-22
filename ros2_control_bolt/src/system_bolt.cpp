@@ -58,7 +58,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   eth_interface_ = info_.hardware_parameters.at("eth_interface");
  
   // Define board (ODRI)
-  auto main_board_ptr = std::make_shared<MasterBoardInterface>(eth_interface_);
+  auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(eth_interface_);
 
   // Define joints (ODRI)
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
@@ -82,7 +82,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
     safety_damping_ = stod(joint.parameters.at("safety_damping"));
   }
 
-  auto joints_ = std::make_shared<JointModules>(main_board_ptr,
+  auto joints_ = std::make_shared<JointModules>(main_board_ptr_,
                                                motor_numbers_,
                                                motor_constants_,
                                                gear_ratios_,
@@ -110,11 +110,11 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
     }
   }
   auto imu = std::make_shared<IMU>(
-      main_board_ptr, rotate_vector_, orientation_vector_);
+      main_board_ptr_, rotate_vector_, orientation_vector_);
 
 
   // Define the robot (ODRI).
-  robot_ = std::make_shared<Robot>(main_board_ptr, joints_, imu);
+  robot_ = std::make_shared<Robot>(main_board_ptr_, joints_, imu);
 
 return return_type::OK;
 }
@@ -434,49 +434,6 @@ return_type SystemBoltHardware::calibration(
 
     robot_->RunCalibration(calib_ctrl);
 
-
-
-
-
-
-
-    /*// Calibration part
-    double Kp = stod(info.hardware_parameters.at("calib_kp"));
-    double Kd = stod(info.hardware_parameters.at("calib_kd"));
-    double T = stod(info.hardware_parameters.at("calib_T"));
-    double dt = stod(info.hardware_parameters.at("calib_dt"));
-    std::vector<CalibrationMethod> directions = {
-        AUTO, AUTO, AUTO, AUTO, AUTO, AUTO}; 
-    auto calib_ctrl = std::make_shared<JointCalibrator>(
-        joints_, directions, position_offsets_, Kp, Kd, T, dt);
-    bool is_calibrated = false;
-    std::chrono::time_point<std::chrono::system_clock> last =
-        std::chrono::system_clock::now();
-    while (!robot_->IsTimeout())
-    {
-        if (((std::chrono::duration<double>)(std::chrono::system_clock::now()-last)).count() > 0.001)
-        {
-            if (robot_->IsReady())
-            {
-                if (!is_calibrated)
-                {
-                    is_calibrated = calib_ctrl->Run();
-                    if (is_calibrated)
-                    {
-                        std::cout << "Calibration is done." << std::endl;
-                    }
-                }
-            }
-
-            robot_->SendCommand();
-
-        }
-        else
-        {
-            std::this_thread::yield();
-        }
-    }
-*/
     return return_type::OK;
   }
 
@@ -560,7 +517,7 @@ return_type SystemBoltHardware::stop()
     robot_->SendCommand();
   }
 
-
+  //robot_->main_board_ptr_->Stop();
 
 
   /*RCLCPP_INFO(
