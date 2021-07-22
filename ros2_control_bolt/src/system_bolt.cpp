@@ -116,12 +116,6 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   // Define the robot (ODRI).
   robot_ = std::make_shared<Robot>(main_board_ptr, joints_, imu);
 
-  // Initialize gains
-  kp_ = 0.0;
-  kd_ = 0.0;
-
-
-
 return return_type::OK;
 }
 
@@ -607,8 +601,8 @@ hardware_interface::return_type SystemBoltHardware::read()
     hw_states_[joint.name].position = sensor_positions[joint_name_to_motor_nb_[joint.name]];
     hw_states_[joint.name].velocity = sensor_velocities[joint_name_to_motor_nb_[joint.name]];
     hw_states_[joint.name].effort = measured_torques[joint_name_to_motor_nb_[joint.name]];
-    hw_states_[joint.name].Kp = kp_;
-    hw_states_[joint.name].Kd = kd_;
+    hw_states_[joint.name].Kp = stod(joint.parameters.at("kp"));
+    hw_states_[joint.name].Kd = stod(joint.parameters.at("kd"));
   }
   
   // Assignment of IMU data (URDF)
