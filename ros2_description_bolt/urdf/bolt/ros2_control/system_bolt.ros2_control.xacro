@@ -66,6 +66,7 @@
         <param name="motor_reversed_polarity">${true}</param>
         <param name="position_offset">0.238</param>
       </joint>
+      
       <joint name="FLHFE">
         <command_interface name="position">
           <param name="min">-1.7</param>
@@ -101,6 +102,7 @@
         <param name="motor_reversed_polarity">${true}</param>
         <param name="position_offset">-0.308</param>
       </joint>
+
       <joint name="FLK">
         <command_interface name="position">
           <param name="min">-3.4</param>
@@ -136,6 +138,7 @@
         <param name="motor_reversed_polarity">${true}</param>
         <param name="position_offset">0.276</param>
       </joint>
+
       <joint name="FRHAA">
         <command_interface name="position">
           <param name="min">-0.5</param>
@@ -171,6 +174,7 @@
         <param name="motor_reversed_polarity">${true}</param>
         <param name="position_offset">-0.115</param>
       </joint>
+
       <joint name="FRHFE">
         <command_interface name="position">
           <param name="min">-1.7</param>
@@ -206,6 +210,7 @@
         <param name="motor_reversed_polarity">${false}</param>
         <param name="position_offset">-0.584</param>
       </joint>
+
       <joint name="FRK">
         <command_interface name="position">
           <param name="min">-3.4</param>
@@ -241,6 +246,7 @@
         <param name="motor_reversed_polarity">${false}</param>
         <param name="position_offset">0.432</param>
       </joint>
+
       <sensor name="IMU">
         <state_interface name="gyroscope"/>
         <state_interface name="accelerometer"/>
