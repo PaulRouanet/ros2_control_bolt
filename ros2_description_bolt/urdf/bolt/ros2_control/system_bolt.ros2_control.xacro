@@ -23,6 +23,10 @@
             <param name="example_param_hw_stop_duration_sec">3.0</param>
             <param name="example_param_hw_slowdown">${slowdown}</param>
             <param name="eth_interface">${enp3s0}</param>
+            <param name="calib_kp">3.</param>
+            <param name="calib_kd">0.05</param>
+            <param name="calib_T">2.</param>
+            <param name="calib_dt">0.001</param>
             </xacro:unless>
         </hardware>
       </xacro:unless>
