@@ -453,6 +453,12 @@ return_type SystemBoltHardware::start()
     }
   }
 
+  // Calibration
+  //calibration(const hardware_interface::HardwareInfo & info);
+
+  // Sensor reading
+  read();
+
   status_ = hardware_interface::status::STARTED;
 
 /*  RCLCPP_INFO(
