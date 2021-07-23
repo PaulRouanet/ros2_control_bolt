@@ -528,7 +528,20 @@ SystemBoltHardware::write()
   Eigen::Vector6d gain_KP;
   Eigen::Vector6d gain_KD;
 
+  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+    positions[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].position;
+    velocities[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].velocity;
+    torques[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].effort;
+    gain_KP[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].Kp;
+    gain_KD[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].Kd;
+  }
+  robot_->joints->SetDesiredPositions(positions);
+  robot_->joints->SetDesiredVelocities(velocities);
+  robot_->joints->SetTorques(torques);
+  robot_->joints->SetPositionGains(gain_KP);
+  robot_->joints->SetVelocityGains(gain_KD);
 
+/*
   std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
 
   while (!robot_->IsTimeout()) {
@@ -539,8 +552,8 @@ SystemBoltHardware::write()
       if (robot_->IsReady()) {
         
         // Control law        
-        /*positions = ...;
-        torques =  ...;*/
+        positions = ...;
+        torques =  ...;
         
         for (const hardware_interface::ComponentInfo & joint : info_.joints) {
           positions[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].position;
@@ -584,7 +597,7 @@ SystemBoltHardware::write()
   // }
   // RCLCPP_INFO(
   //   rclcpp::get_logger("SystemBoltHardware"),
-  //   "Joints sucessfully written!");
+  //   "Joints sucessfully written!");*/
 
   return return_type::OK;
 }
