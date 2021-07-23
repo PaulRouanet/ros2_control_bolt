@@ -153,7 +153,7 @@ public:
     const std::vector<std::string> & stop_interfaces) override;
   
   ROS2_CONTROL_BOLT_PUBLIC
-  return_type calibration(const hardware_interface::HardwareInfo & info);
+  return_type calibration();
   
   ROS2_CONTROL_BOLT_PUBLIC
   return_type start() override;
@@ -211,7 +211,7 @@ private:
   //robot 
   std::shared_ptr<odri_control_interface::Robot> robot_;
   std::shared_ptr<odri_control_interface::JointModules> joints_;
-  ///std::shared_ptr<master_board_sdk::MasterBoardInterface> main_board_ptr_;
+  std::shared_ptr<MasterBoardInterface> main_board_ptr_;
   
 
   double motor_constants_;
