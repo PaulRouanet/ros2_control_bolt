@@ -414,12 +414,7 @@ SystemBoltHardware::export_command_interfaces()
   return command_interfaces;
 }
 
-
-
-
-
 //Calibration function
-
 return_type SystemBoltHardware::calibration(){
 
     double Kp = stod(info_.hardware_parameters.at("calib_kp"));
@@ -436,8 +431,6 @@ return_type SystemBoltHardware::calibration(){
     return return_type::OK;
   }
 
-
-// START
 
 return_type SystemBoltHardware::start()
 {
@@ -460,34 +453,6 @@ return_type SystemBoltHardware::start()
 
   status_ = hardware_interface::status::STARTED;
 
-/*  RCLCPP_INFO(
-    rclcpp::get_logger("SystemBoltHardware"),
-    "Starting ...please wait...");
-
-//Starting countdown
-  for (auto i = 0; i <= hw_start_sec_; ++i) {
-    rclcpp::sleep_for(std::chrono::seconds(1));
-    RCLCPP_INFO(
-      rclcpp::get_logger("SystemBoltHardware"),
-      "%.1f seconds left...", hw_start_sec_ - i);
-  }
-
-  // set some default values
-  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-    if (std::isnan(hw_states_[joint.name].position)) {
-      hw_states_[joint.name] = {0.0, 0.0, 0.0, 0.0, 0.0};
-      hw_commands_[joint.name] = {0.0, 0.0, 0.0, 0.0, 0.0};
-    }
-  }
-
-  status_ = hardware_interface::status::STARTED;
-
-  RCLCPP_INFO(
-    rclcpp::get_logger("SystemBoltHardware"),
-    "System Sucessfully started!");*/
-
-
-
   return return_type::OK;
 }
 
@@ -503,11 +468,6 @@ return_type SystemBoltHardware::stop()
 
 hardware_interface::return_type SystemBoltHardware::read()
 {
-
-  // RCLCPP_INFO(
-  //rclcpp::get_logger("SystemBoltHardware"),
-  //"Reading...");
-
   // Data acquisition (with ODRI)
   robot_->ParseSensorData();
 
@@ -554,15 +514,9 @@ hardware_interface::return_type SystemBoltHardware::read()
   imu_states_["IMU"].quater[2] = imu_quater[2];
   imu_states_["IMU"].quater[3] = imu_quater[3];
   
-
-  // RCLCPP_INFO(
-  //rclcpp::get_logger("SystemBoltHardware"),
-  //"Joints sucessfully read!");
-
   return return_type::OK;
 }
 
-////// WRITE
 
 hardware_interface::return_type
 SystemBoltHardware::write()
@@ -634,14 +588,6 @@ SystemBoltHardware::write()
 
   return return_type::OK;
 }
-
-
-
-
-
-
-
-
 
 
 
