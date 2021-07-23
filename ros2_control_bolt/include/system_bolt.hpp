@@ -136,10 +136,10 @@ public:
   RCLCPP_SHARED_PTR_DEFINITIONS(SystemBoltHardware)
 
   ROS2_CONTROL_BOLT_PUBLIC
-  return_type configure(const hardware_interface::HardwareInfo & info) override;
+  return_type configure();
 
   ROS2_CONTROL_BOLT_PUBLIC
-  return_type init_robot(const hardware_interface::HardwareInfo & info);
+  return_type init_robot();
 
   ROS2_CONTROL_BOLT_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;

@@ -50,7 +50,7 @@ Eigen::Vector6d desired_joint_position = Eigen::Vector6d::Zero();
 Eigen::Vector6d desired_torque = Eigen::Vector6d::Zero();
 
 
-return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInfo & info)
+return_type SystemBoltHardware::init_robot()
 {
   //Define the ODRI robot from URDF values
 
@@ -61,7 +61,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   main_board_ptr_ = std::make_shared<MasterBoardInterface>(eth_interface_);
 
   // Define joints (ODRI)
-  for (const hardware_interface::ComponentInfo & joint : info.joints) {
+  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
     // Motor numbers
     motor_numbers_[joint_name_to_motor_nb_[joint.name]] = stoi(joint.parameters.at("motor_number"));
     // Reversed polarities
@@ -94,12 +94,12 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
                                                safety_damping_);
 
   // Get position offset of each joint
-    for (const hardware_interface::ComponentInfo & joint : info.joints) {
+    for (const hardware_interface::ComponentInfo & joint : info_.joints) {
       position_offsets_[joint_name_to_motor_nb_[joint.name]] = stod(joint.parameters.at("position_offset"));   //Modif d'après lecture des capteurs (demo bolt)
     }
 
   // Define the IMU (ODRI).
-  for (const hardware_interface::ComponentInfo & sensor : info.sensors) {
+  for (const hardware_interface::ComponentInfo & sensor : info_.sensors) {
     std::istringstream iss_rotate (sensor.parameters.at("rotate_vector"));
     std::istringstream iss_orientation (sensor.parameters.at("orientation_vector"));
     for (int n=0; n<3; n++){
@@ -121,10 +121,9 @@ return return_type::OK;
 
 
 
-return_type SystemBoltHardware::configure(
-  const hardware_interface::HardwareInfo & info)
+return_type SystemBoltHardware::configure()
 {
-  if (configure_default(info) != return_type::OK) {
+  if (configure_default(info_) != return_type::OK) {
     return return_type::ERROR;
   }
 
@@ -436,7 +435,6 @@ return_type SystemBoltHardware::start()
 {
   robot_->Start();
 
-  
   // set some default values
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
     if (std::isnan(hw_states_[joint.name].position)) {
@@ -540,64 +538,6 @@ SystemBoltHardware::write()
   robot_->joints->SetTorques(torques);
   robot_->joints->SetPositionGains(gain_KP);
   robot_->joints->SetVelocityGains(gain_KD);
-
-/*
-  std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
-
-  while (!robot_->IsTimeout()) {
-    if (((std::chrono::duration<double>)(std::chrono::system_clock::now()-last)).count() > 0.001) {
-      
-      last = std::chrono::system_clock::now();  // last+dt would be better
-
-      if (robot_->IsReady()) {
-        
-        // Control law        
-        positions = ...;
-        torques =  ...;
-        
-        for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-          positions[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].position;
-          velocities[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].velocity;
-          torques[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].effort;
-          gain_KP[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].Kp;
-          gain_KD[joint_name_to_motor_nb_[joint.name]] = hw_commands_[joint.name].Kd;
-        }
-
-        robot_->joints->SetDesiredPositions(positions);
-        robot_->joints->SetDesiredVelocities(velocities);
-        robot_->joints->SetTorques(torques);
-        robot_->joints->SetPositionGains(gain_KP);
-        robot_->joints->SetVelocityGains(gain_KD);
-          
-      }
-    }
-    else
-        {
-            std::this_thread::yield();
-        }
-
-    robot_->SendCommand();
-  }
-
-
-  // RCLCPP_INFO(
-  //   rclcpp::get_logger("SystemBoltHardware"),
-  //   "Writing...");
-  //  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-    // Simulate sending commands to the hardware
-    // RCLCPP_INFO(
-    //   rclcpp::get_logger("SystemBoltHardware"),
-    //   "Got command (%.5f,%.5f,%.5f,%.5f,%.5f) for joint %d!",
-    //   hw_commands_[i].position,
-    //   hw_commands_[i].velocity,
-    //   hw_commands_[i].effort,
-    //   hw_commands_[i].Kp,
-    //   hw_commands_[i].Kd,
-    //   i);
-  // }
-  // RCLCPP_INFO(
-  //   rclcpp::get_logger("SystemBoltHardware"),
-  //   "Joints sucessfully written!");*/
 
   return return_type::OK;
 }
