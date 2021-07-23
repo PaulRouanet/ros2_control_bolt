@@ -58,7 +58,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
   eth_interface_ = info_.hardware_parameters.at("eth_interface");
  
   // Define board (ODRI)
-  auto main_board_ptr_ = std::make_shared<MasterBoardInterface>(eth_interface_);
+  main_board_ptr_ = std::make_shared<MasterBoardInterface>(eth_interface_);
 
   // Define joints (ODRI)
   for (const hardware_interface::ComponentInfo & joint : info.joints) {
@@ -82,7 +82,7 @@ return_type SystemBoltHardware::init_robot(const hardware_interface::HardwareInf
     safety_damping_ = stod(joint.parameters.at("safety_damping"));
   }
 
-  auto joints_ = std::make_shared<JointModules>(main_board_ptr_,
+  joints_ = std::make_shared<JointModules>(main_board_ptr_,
                                                motor_numbers_,
                                                motor_constants_,
                                                gear_ratios_,
@@ -420,13 +420,12 @@ SystemBoltHardware::export_command_interfaces()
 
 //Calibration function
 
-return_type SystemBoltHardware::calibration(
-  const hardware_interface::HardwareInfo & info){
+return_type SystemBoltHardware::calibration(){
 
-    double Kp = stod(info.hardware_parameters.at("calib_kp"));
-    double Kd = stod(info.hardware_parameters.at("calib_kd"));
-    double T = stod(info.hardware_parameters.at("calib_T"));
-    double dt = stod(info.hardware_parameters.at("calib_dt"));
+    double Kp = stod(info_.hardware_parameters.at("calib_kp"));
+    double Kd = stod(info_.hardware_parameters.at("calib_kd"));
+    double T = stod(info_.hardware_parameters.at("calib_T"));
+    double dt = stod(info_.hardware_parameters.at("calib_dt"));
     std::vector<CalibrationMethod> directions = {
         AUTO, AUTO, AUTO, AUTO, AUTO, AUTO}; 
     auto calib_ctrl = std::make_shared<JointCalibrator>(
@@ -454,7 +453,7 @@ return_type SystemBoltHardware::start()
   }
 
   // Calibration
-  //calibration(const hardware_interface::HardwareInfo & info);
+  calibration();
 
   // Sensor reading
   read();
@@ -493,66 +492,13 @@ return_type SystemBoltHardware::start()
 }
 
 
-
-
-
-
-
-
-
-
-// STOP
-
 return_type SystemBoltHardware::stop()
 {
-  // Set 0 values to commands
-  /*for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-    hw_commands_[joint.name] = {0.0, 0.0, 0.0, 0.0, 0.0};
-  }*/
-
-  // Put torques to 0.0
-  Eigen::Vector6d torques;
-
-  while (!robot_->IsTimeout()) {
-        
-    for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-      torques[joint_name_to_motor_nb_[joint.name]] = 0.0;
-    }
-
-    robot_->joints->SetTorques(torques);
-    robot_->SendCommand();
-  }
-
-  //robot_->main_board_ptr_->Stop();
-
-
-  /*RCLCPP_INFO(
-    rclcpp::get_logger("SystemBoltHardware"),
-    "Stopping ...please wait...");
-
-  for (int i = 0; i <= hw_stop_sec_; i++) {
-    rclcpp::sleep_for(std::chrono::seconds(1));
-    RCLCPP_INFO(
-      rclcpp::get_logger("SystemBoltHardware"),
-      "%.1f seconds left...", hw_stop_sec_ - i);
-  }
-
-  status_ = hardware_interface::status::STOPPED;
-
-  RCLCPP_INFO(
-    rclcpp::get_logger("SystemBoltHardware"),
-    "System sucessfully stopped!");*/
+  // Stop the MasterBoard
+  main_board_ptr_->Stop();
 
   return return_type::OK;
 }
-
-
-
-
-
-
-
-////// READ
 
 
 hardware_interface::return_type SystemBoltHardware::read()
