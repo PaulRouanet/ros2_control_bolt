@@ -1,32 +1,85 @@
-<?xml version="1.0"?>
-<!-- Revolute-Revolute Manipulator -->
+<?xml version="1.0" ?>
 <!--
-Copied and modified from ROS2 example -
-https://github.com/ros-controls/ros2_control_demos/blob/master/ros2_control_demo_description/rrbot_description/urdf/rrbot.urdf.xacro
+Copied from ODRI -
+https://github.com/open-dynamic-robot-initiative/robot_properties_bolt/blob/master/src/robot_properties_bolt/resources/xacro/bolt.xacro
 -->
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="bolt">
-  <xacro:arg name="prefix" default="" />
 
-  <!-- Import RRBot macro -->
-  <xacro:include filename="$(find ros2_description_bolt)/urdf/system_bolt_description.urdf.xacro" />
+<robot name="bolt"
 
-  <!-- Import Rviz colors -->
-  <xacro:include filename="$(find ros2_description_bolt)/gazebo/system_bolt.materials.xacro" />
+  xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+  xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+  xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
 
-  <!-- Import RRBot ros2_control description -->
-  <xacro:include filename="$(find ros2_description_bolt)/ros2_control/system_bolt.ros2_control.xacro" />
+  <xacro:macro name="bolt_full" params="mesh_ext color_name color opacity new_leg has_passive_ankle">
 
-  <!-- Used for fixing robot -->
-  <link name="world"/>
-  <gazebo reference="world">
-    <static>true</static>
-  </gazebo>
+    <!-- This file is based on: https://atlas.is.localnet/confluence/display/AMDW/Quadruped+URDF+Files -->
+    <link name="base_link">
+      <!-- BASE LINK INERTIAL -->
+      <inertial>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <mass value="0.61436936"/>
+          <!-- The base is extremely symmetrical. -->
+          <inertia ixx="0.00578574" ixy="0.0" ixz="0.0"
+                                    iyy="0.01938108" iyz="0.0"
+                                                    izz="0.02476124"
+          />
+      </inertial>
+      <!-- BASE LINK VISUAL -->
+      <visual>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+            <mesh filename="package://ros2_description_bolt/meshes/${mesh_ext}/bolt_body.${mesh_ext}"/>
+          </geometry>
+          <material name="${color_name}">
+              <color rgba="${color} ${opacity}"/>
+          </material>
+      </visual>
+      <!-- BASE LINK COLLISION -->
+      <collision>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+            <mesh filename="package://ros2_description_bolt/meshes/${mesh_ext}/bolt_body.${mesh_ext}"/>
+          </geometry>
+          <material name="${color_name}">
+              <color rgba="${color} ${opacity}"/>
+          </material>
+      </collision>
+      <!-- Bullet specific paramters -->
+      <contact>
+        <lateral_friction value="1.0"/>
+        <restitution value="0.5"/>
+      </contact>
+    </link> <!-- END BASE LINK -->
 
-  <xacro:system_bolt parent="world" prefix="$(arg prefix)">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-  </xacro:system_bolt>
+    <!-- Include the legs -->
+    <xacro:include filename="leg.xacro"/>
 
-  <xacro:system_bolt_ros2_control
-    name="Bolt" prefix="$(arg prefix)" />
+    <!-- Include the front left leg -->
+    <xacro:leg
+        prefix="FL"
+        is_front="true"
+        is_right="false"
+        has_side_motion="true"
+        mesh_ext="${mesh_ext}"
+        color_name="${color_name}"
+        color="${color}"
+        opacity="${opacity}"
+        new_leg="${new_leg}"
+        has_passive_ankle="${has_passive_ankle}"/>
 
+    <!-- Include the front right leg -->
+    <xacro:leg
+        prefix="FR"
+        is_front="true"
+        is_right="true"
+        has_side_motion="true"
+        mesh_ext="${mesh_ext}"
+        color_name="${color_name}"
+        color="${color}"
+        opacity="${opacity}"
+        new_leg="${new_leg}"
+        has_passive_ankle="${has_passive_ankle}"/>
+
+  </xacro:macro>
 </robot>

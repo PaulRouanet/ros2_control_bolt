@@ -1,10 +1,10 @@
+<?xml version="1.0" ?>
 <!--
 Copied from ODRI -
 https://github.com/open-dynamic-robot-initiative/robot_properties_bolt/blob/master/src/robot_properties_bolt/resources/xacro/bolt.urdf.xacro
 -->
 
 
-<?xml version="1.0" ?>
 <robot name="bolt"
   xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
   xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
@@ -17,9 +17,14 @@ https://github.com/open-dynamic-robot-initiative/robot_properties_bolt/blob/mast
   <xacro:property name="opacity" value="1.0" />
   <xacro:property name="new_leg" value="true" />
   <xacro:property name="has_passive_ankle" value="false" />
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="use_sim" default="false" />
+  <xacro:arg name="use_fake_hardware" default="false" />
 
   <!-- Include the legs -->
-  <xacro:include filename="system_bolt.xacro"/>
+  <xacro:include filename="system_bolt.urdf.xacro"/>
+
+  <xacro:include filename="$(find ros2_description_bolt)/ros2_control/system_bolt.ros2_control.xacro" />
 
   <!-- Include the fully parametrized bolt -->
   <xacro:bolt_full
@@ -29,5 +34,8 @@ https://github.com/open-dynamic-robot-initiative/robot_properties_bolt/blob/mast
       opacity="${opacity}"
       new_leg="${new_leg}"
       has_passive_ankle="${has_passive_ankle}"/>
+
+  <xacro:system_bolt_ros2_control
+    name="SystemBoltRos2Control" prefix="$(arg prefix)" use_fake_hardware="$(arg use_fake_hardware)"/>
 
 </robot>
