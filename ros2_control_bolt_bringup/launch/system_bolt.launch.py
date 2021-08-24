@@ -36,7 +36,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "description_file",
-            default_value="system_bolt.ros2_control.xacro",
+            default_value="system_bolt.urdf.xacro",
             description="URDF/XACRO description file with the robot.",
         )
     )
@@ -104,21 +104,6 @@ def generate_launch_description():
             PathJoinSubstitution(
                 [FindPackageShare(description_package), "urdf", description_file]
             ),
-            " ",
-            "prefix:=",
-            prefix,
-            " ",
-            "use_sim:=",
-            use_sim,
-            " ",
-            "use_fake_hardware:=",
-            use_fake_hardware,
-            " ",
-            "fake_sensor_commands:=",
-            fake_sensor_commands,
-            " ",
-            "slowdown:=",
-            slowdown,
         ]
     )
     robot_description = {"robot_description": robot_description_content}
