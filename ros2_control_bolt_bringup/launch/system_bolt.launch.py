@@ -36,7 +36,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "description_file",
-            default_value="system_bolt.urdf.xacro",
+            default_value="system_bolt_description.urdf.xacro",
             description="URDF/XACRO description file with the robot.",
         )
     )
@@ -119,6 +119,7 @@ def generate_launch_description():
         [FindPackageShare(description_package), "rviz", "rrbot.rviz"]
     )
 
+    print (robot_description)
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -156,10 +157,10 @@ def generate_launch_description():
 
     nodes = [
         control_node,
-        robot_state_pub_node,
-        rviz_node,
-        joint_state_broadcaster_spawner,
-        robot_controller_spawner,
+        #robot_state_pub_node,
+        #rviz_node,
+        #joint_state_broadcaster_spawner,
+        #robot_controller_spawner,
     ]
 
     return LaunchDescription(declared_arguments + nodes)
