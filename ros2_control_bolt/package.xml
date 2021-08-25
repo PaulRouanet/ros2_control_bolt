@@ -1,50 +1,24 @@
-<!-- Adaptation of package.xml from odri_control_interface -->
-
 <?xml version="1.0"?>
-<?xml-model
-   href="http://download.ros.org/schema/package_format3.xsd"
-   schematypens="http://www.w3.org/2001/XMLSchema"?>
-
-
 <package format="3">
+  <name>ros2_control_demos</name>
+  <version>0.0.0</version>
+  <description>Metapackage for `ros2_control` demos packages</description>
 
-    <name>ros2_control_bolt</name>
-    <version>1.0.0</version>
+  <author email="prouanet@laas.fr">Paul Rouanet</author>
 
-    <description>
-	Common interface for controlling robots build with the odri master board.
-	Here its a test version for Bolt.
-    </description>
+  <maintainer email="prouanet@laas.fr">Paul Rouanet</maintainer>
 
-    <maintainer email="prouanet@laas.fr">Paul Rouanet</maintainer>
+  <license>Apache-2.0</license>
 
-    <license>BSD 3-clause</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
-    <buildtool_depend>cmake</buildtool_depend>
-    <buildtool_depend>mpi_cmake_modules</buildtool_depend>
-    
-    <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>ros2_control_bolt_bringup</exec_depend>
+  <exec_depend>diffbot_description</exec_depend>
+  <exec_depend>rrbot_description</exec_depend>
+  <exec_depend>ros2_hardware_interface_bolt</exec_depend>
+  <exec_depend>ros2_control_test_nodes</exec_depend>
 
-    <!-- CMake module containing helper to find the OS, boost, python, etc. -->
-    <depend>pybind11</depend>
-    <depend>Threads</depend>
-    <depend>master_board_sdk</depend>
-    <depend>Boost</depend>
-    <depend>Eigen3</depend>
-    <depend>eigenpy</depend>
-    
-    
-    <!-- Modules usefull for rrbot_system_bolt -->
-    <depend>hardware_interface</depend>
-    <depend>pluginlib</depend>
-    <depend>rclcpp</depend>
-
-    
-    
-    <test_depend>ament_cmake_gtest</test_depend>
-
-    <export>
-      <build_type>ament_cmake</build_type>
-    </export>
-
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

@@ -24,7 +24,7 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace ros2_control_demo_hardware
+namespace ros2_hardware_interface_bolt
 {
 return_type SystemBoltMultiInterfaceHardware::configure(
   const hardware_interface::HardwareInfo & info)
@@ -316,7 +316,7 @@ return_type SystemBoltMultiInterfaceHardware::write()
   return return_type::OK;
 }
 
-}  // namespace ros2_control_demo_hardware
+}  // namespace ros2_hardware_interface_bolt
 
 #include "pluginlib/class_list_macros.hpp"
 
