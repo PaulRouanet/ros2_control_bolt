@@ -64,7 +64,6 @@ find_package(master_board_sdk REQUIRED)
 
 
 #find_package(ros2_control REQUIRED)
-#find_package(ros2_control_demos REQUIRED)
 
 
 add_project_dependency(yaml-cpp CONFIG REQUIRED)
@@ -79,7 +78,7 @@ add_project_dependency(controller_interface REQUIRED)
 #add_project_dependency(pluginlib REQUIRED)
 #add_project_dependency(rclcpp REQUIRED)
 #add_project_dependency(ros2_control REQUIRED)
-#add_project_dependency(ros2_control_demos REQUIRED)
+
 
 # Set component to fetch from boost Get the python interface for the bindings
 if(BUILD_PYTHON_INTERFACE)
@@ -187,3 +186,4 @@ create_bolt_demo(demo_bolt_from_yaml)
 create_bolt_demo(demo_bolt_sensor_reading)
 create_bolt_demo(demo_bolt_calibration)
 create_bolt_demo(demo_bolt_write_commands)
+#create_bolt_demo(test_start)

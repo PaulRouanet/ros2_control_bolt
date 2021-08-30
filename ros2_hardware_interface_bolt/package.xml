@@ -1,14 +1,13 @@
-<!-- Adaptation of package.xml from odri_control_interface -->
-
 <?xml version="1.0"?>
 <?xml-model
    href="http://download.ros.org/schema/package_format3.xsd"
    schematypens="http://www.w3.org/2001/XMLSchema"?>
 
+<!-- Adaptation of package.xml from odri_control_interface -->
 
 <package format="3">
 
-    <name>ros2_control_bolt</name>
+    <name>ros2_hardware_interface_bolt</name>
     <version>1.0.0</version>
 
     <description>
@@ -34,11 +33,12 @@
     <depend>eigenpy</depend>
     
     
-    <!-- Modules usefull for rrbot_system_bolt -->
+    <!-- Modules usefull for system_bolt -->
     <depend>hardware_interface</depend>
     <depend>pluginlib</depend>
     <depend>rclcpp</depend>
-
+    <depend>odri_control_interface</depend>
+    <depend>controller_interface</depend>
     
     
     <test_depend>ament_cmake_gtest</test_depend>
