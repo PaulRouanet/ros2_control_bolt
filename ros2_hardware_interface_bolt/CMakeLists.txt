@@ -100,6 +100,7 @@ endif(BUILD_PYTHON_INTERFACE)
 #)
 #ament_package()
 ament_export_dependencies(odri_control_interface)
+ament_package()
 
 
 
@@ -186,4 +187,3 @@ create_bolt_demo(demo_bolt_from_yaml)
 create_bolt_demo(demo_bolt_sensor_reading)
 create_bolt_demo(demo_bolt_calibration)
 create_bolt_demo(demo_bolt_write_commands)
-#create_bolt_demo(test_start)
