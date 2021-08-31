@@ -135,11 +135,22 @@ return_type SystemBoltHardware::configure()
   //For each sensor.
   for (const hardware_interface::ComponentInfo & sensor : info_.sensors) {
     imu_states_[sensor.name] =
-      {std::numeric_limits<Eigen::Vector3d>::quiet_NaN(),
-       std::numeric_limits<Eigen::Vector3d>::quiet_NaN(),
-       std::numeric_limits<Eigen::Vector3d>::quiet_NaN(),
-       std::numeric_limits<Eigen::Vector3d>::quiet_NaN(),
-       std::numeric_limits<Eigen::Vector4d>::quiet_NaN()};
+      {std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::quiet_NaN()};
   }
   // For each joint.
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
@@ -364,6 +375,99 @@ SystemBoltHardware::export_state_interfaces()
       hardware_interface::StateInterface(
         joint.name, HW_IF_GAIN_KD,
         &hw_states_[joint.name].effort));
+        
+  }
+
+  for (const hardware_interface::ComponentInfo & sensor : info_.sensors) {
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "gyroscope_x",
+        &imu_states_[sensor.name].gyro_x));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "gyroscope_y",
+        &imu_states_[sensor.name].gyro_y));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "gyroscope_z",
+        &imu_states_[sensor.name].gyro_z));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "accelerometer_x",
+        &imu_states_[sensor.name].accelero_x));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "accelerometer_y",
+        &imu_states_[sensor.name].accelero_y));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "accelerometer_z",
+        &imu_states_[sensor.name].accelero_z));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "linear_acceleration_x",
+        &imu_states_[sensor.name].line_acc_x));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "linear_acceleration_y",
+        &imu_states_[sensor.name].line_acc_y));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "linear_acceleration_z",
+        &imu_states_[sensor.name].line_acc_z));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "attitude_euler_x",
+        &imu_states_[sensor.name].euler_x));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "attitude_euler_y",
+        &imu_states_[sensor.name].euler_y));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "attitude_euler_z",
+        &imu_states_[sensor.name].euler_z));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "attitude_quaternion_x",
+        &imu_states_[sensor.name].quater_x));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "attitude_quaternion_y",
+        &imu_states_[sensor.name].quater_y));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "attitude_quaternion_z",
+        &imu_states_[sensor.name].quater_z));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor.name,
+        "attitude_quaternion_w",
+        &imu_states_[sensor.name].quater_w));
+    
+
+/*
+
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        sensor_name,
+        "fx",
+        &values_.fx));*/
   }
 
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
@@ -433,7 +537,8 @@ return_type SystemBoltHardware::calibration(){
 
 return_type SystemBoltHardware::start()
 {
-  robot_->Start();
+  //robot_->Start();
+  robot_->odri_control_interface::Robot::Start();
 
   // set some default values
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
@@ -458,7 +563,7 @@ return_type SystemBoltHardware::start()
 return_type SystemBoltHardware::stop()
 {
   // Stop the MasterBoard
-  main_board_ptr_->Stop();
+  main_board_ptr_->MasterBoardInterface::Stop();
 
   return return_type::OK;
 }
@@ -491,26 +596,26 @@ hardware_interface::return_type SystemBoltHardware::read()
   
   // Assignment of IMU data (URDF)
   // Modif with for loop possible to optimize the code
-  imu_states_["IMU"].gyro[0] = imu_gyroscope[0];
-  imu_states_["IMU"].gyro[1] = imu_gyroscope[1];
-  imu_states_["IMU"].gyro[2] = imu_gyroscope[2];
+  imu_states_["IMU"].gyro_x = imu_gyroscope[0];
+  imu_states_["IMU"].gyro_z = imu_gyroscope[1];
+  imu_states_["IMU"].gyro_y = imu_gyroscope[2];
 
-  imu_states_["IMU"].accelero[0] = imu_accelero[0];
-  imu_states_["IMU"].accelero[1] = imu_accelero[1];
-  imu_states_["IMU"].accelero[2] = imu_accelero[2];
+  imu_states_["IMU"].accelero_x = imu_accelero[0];
+  imu_states_["IMU"].accelero_y = imu_accelero[1];
+  imu_states_["IMU"].accelero_z = imu_accelero[2];
 
-  imu_states_["IMU"].line_acc[0] = imu_linear_acc[0];
-  imu_states_["IMU"].line_acc[1] = imu_linear_acc[1];
-  imu_states_["IMU"].line_acc[2] = imu_linear_acc[2];
+  imu_states_["IMU"].line_acc_x = imu_linear_acc[0];
+  imu_states_["IMU"].line_acc_y = imu_linear_acc[1];
+  imu_states_["IMU"].line_acc_z = imu_linear_acc[2];
 
-  imu_states_["IMU"].euler[0] = imu_euler[0];
-  imu_states_["IMU"].euler[1] = imu_euler[1];
-  imu_states_["IMU"].euler[2] = imu_euler[2];
+  imu_states_["IMU"].euler_x = imu_euler[0];
+  imu_states_["IMU"].euler_y = imu_euler[1];
+  imu_states_["IMU"].euler_z = imu_euler[2];
 
-  imu_states_["IMU"].quater[0] = imu_quater[0];
-  imu_states_["IMU"].quater[1] = imu_quater[1];
-  imu_states_["IMU"].quater[2] = imu_quater[2];
-  imu_states_["IMU"].quater[3] = imu_quater[3];
+  imu_states_["IMU"].quater_x = imu_quater[0];
+  imu_states_["IMU"].quater_y = imu_quater[1];
+  imu_states_["IMU"].quater_z = imu_quater[2];
+  imu_states_["IMU"].quater_w = imu_quater[3];
   
   return return_type::OK;
 }

@@ -94,11 +94,22 @@ struct PosVelEffortGains
 
 struct GyroAccLineEulerQuater
 {
-  Eigen::Vector3d gyro;
-  Eigen::Vector3d accelero;
-  Eigen::Vector3d line_acc;
-  Eigen::Vector3d euler;
-  Eigen::Vector4d quater;
+  double gyro_x;
+  double gyro_y;
+  double gyro_z;
+  double accelero_x;
+  double accelero_y;
+  double accelero_z;
+  double line_acc_x;
+  double line_acc_y;
+  double line_acc_z;
+  double euler_x;
+  double euler_y;
+  double euler_z;
+  double quater_x;
+  double quater_y;
+  double quater_z;
+  double quater_w;
 };
 
 constexpr const auto HW_IF_GAIN_KP = "gain_kp";
