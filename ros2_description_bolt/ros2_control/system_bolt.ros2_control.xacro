@@ -18,7 +18,7 @@
             <param name="state_following_offset">0.0</param>
           </xacro:if>
           <xacro:unless value="${use_fake_hardware}">
-            <plugin>ros2_hardware_interface_bolt/SystemBoltMultiInterfaceHardware</plugin>
+            <plugin>ros2_control_bolt/SystemBoltHardware</plugin>
             <param name="example_param_hw_start_duration_sec">2.0</param>
             <param name="example_param_hw_stop_duration_sec">3.0</param>
             <param name="example_param_hw_slowdown">${slowdown}</param>
@@ -248,11 +248,22 @@
       </joint>
 
       <sensor name="IMU">
-        <state_interface name="gyroscope"/>
-        <state_interface name="accelerometer"/>
-        <state_interface name="linear_acceleration"/>
-        <state_interface name="attitude_euler"/>
-        <state_interface name="attitude_quaternion"/>
+        <state_interface name="gyroscope_x"/>
+        <state_interface name="gyroscope_y"/>
+        <state_interface name="gyroscope_z"/>
+        <state_interface name="accelerometer_x"/>
+        <state_interface name="accelerometer_y"/>
+        <state_interface name="accelerometer_z"/>
+        <state_interface name="linear_acceleration_x"/>
+        <state_interface name="linear_acceleration_y"/>
+        <state_interface name="linear_acceleration_z"/>
+        <state_interface name="attitude_euler_x"/>
+        <state_interface name="attitude_euler_y"/>
+        <state_interface name="attitude_euler_z"/>
+        <state_interface name="attitude_quaternion_x"/>
+        <state_interface name="attitude_quaternion_y"/>
+        <state_interface name="attitude_quaternion_z"/>
+        <state_interface name="attitude_quaternion_w"/>
         <param name="rotate_vector">"1 2 3"</param>
         <param name="orientation_vector">"1 2 3 4"</param>
       </sensor>
