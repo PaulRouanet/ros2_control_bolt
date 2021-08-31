@@ -91,7 +91,7 @@ endif(BUILD_PYTHON_INTERFACE)
 #ament_target_dependencies(rclcpp)
 
 
-#pluginlib_export_plugin_description_file(hardware_interface ros2_control_demo_hardware.xml)
+pluginlib_export_plugin_description_file(hardware_interface ros2_hardware_interface_bolt.xml)
 
 #ament_export_dependencies(
 #  hardware_interface
@@ -100,7 +100,6 @@ endif(BUILD_PYTHON_INTERFACE)
 #)
 #ament_package()
 ament_export_dependencies(odri_control_interface)
-ament_package()
 
 
 
@@ -187,3 +186,5 @@ create_bolt_demo(demo_bolt_from_yaml)
 create_bolt_demo(demo_bolt_sensor_reading)
 create_bolt_demo(demo_bolt_calibration)
 create_bolt_demo(demo_bolt_write_commands)
+
+ament_package()
