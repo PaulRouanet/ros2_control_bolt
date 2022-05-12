@@ -8,11 +8,17 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
+
+    arg_world_filename = PathJoinSubstitution([
+           FindPackageShare("ros2_control_bolt_bringup"),
+           'world', 'bolt_world.world'
+	])
+
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [PathJoinSubstitution([FindPackageShare("gazebo_ros"), "launch", "gazebo.launch.py"])]
         ),
-        launch_arguments={"verbose": "false", "pause":  "true"}.items(),
+        launch_arguments={"verbose": "false", "pause":  "true", "world": arg_world_filename}.items(),
     )
 
     # Get URDF via xacro
@@ -30,6 +36,7 @@ def generate_launch_description():
             " use_sim:=true",
         ]
     )
+    
     robot_description = {"robot_description": robot_description_content}
 
     node_robot_state_publisher = Node(
