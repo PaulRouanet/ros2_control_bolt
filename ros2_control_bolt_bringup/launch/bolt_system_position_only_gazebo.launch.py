@@ -36,7 +36,7 @@ def generate_launch_description():
             " use_sim:=true",
         ]
     )
-    
+
     robot_description = {"robot_description": robot_description_content}
 
     node_robot_state_publisher = Node(
