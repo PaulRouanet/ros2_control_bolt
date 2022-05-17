@@ -1,4 +1,4 @@
-<library path="gazebo_hardware_plugins">
+<library path="gazebo_hardware_bolt_plugins">
   <class
     name="gazebo_ros2_control/GazeboSystem"
     type="gazebo_ros2_control::GazeboSystem"

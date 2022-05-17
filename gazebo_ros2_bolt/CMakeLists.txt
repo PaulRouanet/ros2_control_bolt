@@ -39,10 +39,10 @@ ament_target_dependencies(${PROJECT_NAME}
   yaml_cpp_vendor
 )
 
-add_library(gazebo_hardware_plugins SHARED
+add_library(gazebo_bolt_hardware_plugins SHARED
   src/gazebo_system.cpp
 )
-ament_target_dependencies(gazebo_hardware_plugins
+ament_target_dependencies(gazebo_bolt_hardware_plugins
   angles
   gazebo_dev
   hardware_interface
@@ -52,7 +52,7 @@ ament_target_dependencies(gazebo_hardware_plugins
 ## Install
 install(TARGETS
   ${PROJECT_NAME}
-  gazebo_hardware_plugins
+  gazebo_bolt_hardware_plugins
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -66,7 +66,7 @@ ament_export_dependencies(ament_cmake)
 ament_export_dependencies(rclcpp)
 ament_export_libraries(
   ${PROJECT_NAME}
-  gazebo_hardware_plugins
+  gazebo_bolt_hardware_plugins
 )
 
 if(BUILD_TESTING)
@@ -79,6 +79,6 @@ install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/${PROJECT_NAME}
 )
 
-pluginlib_export_plugin_description_file(gazebo_ros2_control gazebo_hardware_bolt_plugins.xml)
+pluginlib_export_plugin_description_file(gazebo_ros2_bolt gazebo_hardware_bolt_plugins.xml)
 
 ament_package()
