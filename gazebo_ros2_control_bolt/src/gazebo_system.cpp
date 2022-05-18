@@ -23,12 +23,12 @@
 #include "gazebo/sensors/ImuSensor.hh"
 #include "gazebo/sensors/ForceTorqueSensor.hh"
 #include "gazebo/sensors/SensorManager.hh"
-class gazebo_ros2_control::GazeboSystemPrivate
+class gazebo_ros2_control_bolt::GazeboBoltSystemPrivate
 {
 public:
-  GazeboSystemPrivate() = default;
+  GazeboBoltSystemPrivate() = default;
 
-  ~GazeboSystemPrivate() = default;
+  ~GazeboBoltSystemPrivate() = default;
 
   /// \brief Degrees od freedom.
   size_t n_dof_;
@@ -46,7 +46,7 @@ public:
   std::vector<std::string> joint_names_;
 
   /// \brief vector with the control method defined in the URDF for each joint.
-  std::vector<GazeboSystemInterface::ControlMethod> joint_control_methods_;
+  std::vector<GazeboBoltSystemInterface::ControlMethod> joint_control_methods_;
 
   /// \brief handles to the joints from within Gazebo
   std::vector<gazebo::physics::JointPtr> sim_joints_;
@@ -468,4 +468,4 @@ hardware_interface::return_type GazeboSystem::write()
 
 #include "pluginlib/class_list_macros.hpp"  // NOLINT
 PLUGINLIB_EXPORT_CLASS(
-  gazebo_ros2_control::GazeboSystem, gazebo_ros2_control::GazeboSystemInterface)
+  gazebo_ros2_control_bolt::GazeboBoltSystem, gazebo_ros2_control_bolt::GazeboBoltSystemInterface)

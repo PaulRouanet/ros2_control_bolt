@@ -44,16 +44,16 @@
 #include "gazebo/common/common.hh"
 #include "gazebo/physics/Model.hh"
 
-namespace gazebo_ros2_control
+namespace gazebo_ros2_control_bolt
 {
 class GazeboRosControlPrivate;
 
-class GazeboRosControlPlugin : public gazebo::ModelPlugin
+class GazeboBoltRosControlPlugin : public gazebo::ModelPlugin
 {
 public:
-  GazeboRosControlPlugin();
+  GazeboBoltRosControlPlugin();
 
-  ~GazeboRosControlPlugin();
+  ~GazeboBoltRosControlPlugin();
 
   // Overloaded Gazebo entry point
   void Load(gazebo::physics::ModelPtr parent, sdf::ElementPtr sdf) override;

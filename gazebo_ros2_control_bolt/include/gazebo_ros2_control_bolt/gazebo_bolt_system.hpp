@@ -26,15 +26,15 @@
 
 #include "std_msgs/msg/bool.hpp"
 
-namespace gazebo_ros2_control
+namespace gazebo_ros2_control_bolt
 {
 // Forward declaration
-class GazeboSystemPrivate;
+class GazeboBoltSystemPrivate;
 
 // These class must inherit `gazebo_ros2_control::GazeboSystemInterface` which implements a
 // simulated `ros2_control` `hardware_interface::SystemInterface`.
 
-class GazeboSystem : public GazeboSystemInterface
+class GazeboBoltSystem : public GazeboSystemInterface
 {
 public:
   // Documentation Inherited
@@ -76,7 +76,7 @@ private:
     gazebo::physics::ModelPtr parent_model);
 
   /// \brief Private data class
-  std::unique_ptr<GazeboSystemPrivate> dataPtr;
+  std::unique_ptr<GazeboBoltSystemPrivate> dataPtr;
 };
 
 }  // namespace gazebo_ros2_control

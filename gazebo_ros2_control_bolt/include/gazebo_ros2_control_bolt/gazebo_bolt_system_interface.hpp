@@ -31,7 +31,7 @@
 #include "rclcpp/rclcpp.hpp"
 
 
-namespace gazebo_ros2_control
+namespace gazebo_ros2_control_bolt
 {
 
 template<class ENUM, class UNDERLYING = typename std::underlying_type<ENUM>::type>
@@ -57,7 +57,7 @@ protected:
 };
 
 // SystemInterface provides API-level access to read and command joint properties.
-class GazeboSystemInterface
+class GazeboBoltSystemInterface
   : public hardware_interface::BaseInterface<hardware_interface::SystemInterface>
 {
 public:

@@ -54,7 +54,7 @@
 
 using namespace std::chrono_literals;
 
-namespace gazebo_ros2_control
+namespace gazebo_ros2_control_bolt
 {
 
 class GazeboRosControlPrivate
@@ -117,14 +117,14 @@ public:
   rclcpp::Time last_update_sim_time_ros_;
 };
 
-GazeboRosControlPlugin::GazeboRosControlPlugin()
+GazeboBoltRosControlPlugin::GazeboBoltRosControlPlugin()
 : impl_(std::make_unique<GazeboRosControlPrivate>())
 {
   RCLCPP_INFO_STREAM(rclcpp::get_logger("gazebo_ros2_control"),
 	      "LAAS version of gazebo_ros2_control: GazeboRosControlPlugin");
 }
 
-GazeboRosControlPlugin::~GazeboRosControlPlugin()
+GazeboBoltRosControlPlugin::~GazeboBoltRosControlPlugin()
 {
   // Stop controller manager thread
   impl_->stop_ = true;
@@ -137,7 +137,7 @@ GazeboRosControlPlugin::~GazeboRosControlPlugin()
 }
 
 // Overloaded Gazebo entry point
-void GazeboRosControlPlugin::Load(gazebo::physics::ModelPtr parent, sdf::ElementPtr sdf)
+void GazeboBoltRosControlPlugin::Load(gazebo::physics::ModelPtr parent, sdf::ElementPtr sdf)
 {
   RCLCPP_INFO_STREAM(
     rclcpp::get_logger("gazebo_ros2_control"),
@@ -460,5 +460,5 @@ std::string GazeboRosControlPrivate::getURDF(std::string param_name) const
 }
 
 // Register this plugin with the simulator
-GZ_REGISTER_MODEL_PLUGIN(GazeboRosControlPlugin)
+GZ_REGISTER_MODEL_PLUGIN(GazeboBoltRosControlPlugin)
 }  // namespace gazebo_ros2_control
