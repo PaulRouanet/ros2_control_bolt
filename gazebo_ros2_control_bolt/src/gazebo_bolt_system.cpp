@@ -19,7 +19,7 @@
 #include <vector>
 #include <utility>
 
-#include "gazebo_ros2_control_bolt/gazebo_system.hpp"
+#include "gazebo_ros2_control_bolt/gazebo_bolt_system.hpp"
 #include "gazebo/sensors/ImuSensor.hh"
 #include "gazebo/sensors/ForceTorqueSensor.hh"
 #include "gazebo/sensors/SensorManager.hh"
@@ -88,17 +88,17 @@ public:
   std::vector<hardware_interface::CommandInterface> command_interfaces_;
 };
 
-namespace gazebo_ros2_control
+namespace gazebo_ros2_control_bolt
 {
 
-bool GazeboSystem::initSim(
+bool GazeboBoltSystem::initSim(
   rclcpp::Node::SharedPtr & model_nh,
   gazebo::physics::ModelPtr parent_model,
   const hardware_interface::HardwareInfo & hardware_info,
   sdf::ElementPtr sdf)
 {
   RCLCPP_INFO(model_nh->get_logger(), "LAAS version of gazebo_ros2_control:GazeboSystem initSim");
-  this->dataPtr = std::make_unique<GazeboSystemPrivate>();
+  this->dataPtr = std::make_unique<GazeboBoltSystemPrivate>();
   this->dataPtr->last_update_sim_time_ros_ = rclcpp::Time();
 
   this->nh_ = model_nh;
@@ -124,7 +124,7 @@ bool GazeboSystem::initSim(
   return true;
 }
 
-void GazeboSystem::registerJoints(
+void GazeboBoltSystem::registerJoints(
   const hardware_interface::HardwareInfo & hardware_info,
   gazebo::physics::ModelPtr parent_model)
 {
@@ -213,7 +213,7 @@ void GazeboSystem::registerJoints(
   }
 }
 
-void GazeboSystem::registerSensors(
+void GazeboBoltSystem::registerSensors(
   const hardware_interface::HardwareInfo & hardware_info,
   gazebo::physics::ModelPtr parent_model)
 {
@@ -350,7 +350,7 @@ void GazeboSystem::registerSensors(
 }
 
 hardware_interface::return_type
-GazeboSystem::configure(const hardware_interface::HardwareInfo & actuator_info)
+GazeboBoltSystem::configure(const hardware_interface::HardwareInfo & actuator_info)
 {
   RCLCPP_INFO(this->nh_->get_logger(), "LAAS version of gazebo_ros2_control: configure");
   if (configure_default(actuator_info) != hardware_interface::return_type::OK) {
@@ -360,33 +360,33 @@ GazeboSystem::configure(const hardware_interface::HardwareInfo & actuator_info)
 }
 
 std::vector<hardware_interface::StateInterface>
-GazeboSystem::export_state_interfaces()
+GazeboBoltSystem::export_state_interfaces()
 {
   RCLCPP_INFO(this->nh_->get_logger(), "LAAS version of gazebo_ros2_control: export_state_interfaces");
   return std::move(this->dataPtr->state_interfaces_);
 }
 
 std::vector<hardware_interface::CommandInterface>
-GazeboSystem::export_command_interfaces()
+GazeboBoltSystem::export_command_interfaces()
 {
   RCLCPP_INFO(this->nh_->get_logger(), "LAAS version of gazebo_ros2_control: export_command_interfaces");
   return std::move(this->dataPtr->command_interfaces_);
 }
 
-hardware_interface::return_type GazeboSystem::start()
+hardware_interface::return_type GazeboBoltSystem::start()
 {
   RCLCPP_INFO(this->nh_->get_logger(), "LAAS version of gazebo_ros2_control: start");
   status_ = hardware_interface::status::STARTED;
   return hardware_interface::return_type::OK;
 }
 
-hardware_interface::return_type GazeboSystem::stop()
+hardware_interface::return_type GazeboBoltSystem::stop()
 {
   status_ = hardware_interface::status::STOPPED;
   return hardware_interface::return_type::OK;
 }
 
-hardware_interface::return_type GazeboSystem::read()
+hardware_interface::return_type GazeboBoltSystem::read()
 {
   for (unsigned int j = 0; j < this->dataPtr->joint_names_.size(); j++) {
     if (this->dataPtr->sim_joints_[j]) {
@@ -425,7 +425,7 @@ hardware_interface::return_type GazeboSystem::read()
   return hardware_interface::return_type::OK;
 }
 
-hardware_interface::return_type GazeboSystem::write()
+hardware_interface::return_type GazeboBoltSystem::write()
 {
   // Get the simulation time and period
   gazebo::common::Time gz_time_now = this->dataPtr->parent_model_->GetWorld()->SimTime();

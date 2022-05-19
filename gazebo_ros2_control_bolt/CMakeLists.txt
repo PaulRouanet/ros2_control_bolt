@@ -26,7 +26,7 @@ link_directories(
 
 # Libraries
 add_library(${PROJECT_NAME} SHARED
-  src/gazebo_ros2_control_plugin.cpp
+  src/gazebo_bolt_ros2_control_plugin.cpp
 )
 ament_target_dependencies(${PROJECT_NAME}
   angles
@@ -40,7 +40,7 @@ ament_target_dependencies(${PROJECT_NAME}
 )
 
 add_library(gazebo_bolt_hardware_plugins SHARED
-  src/gazebo_system.cpp
+  src/gazebo_bolt_system.cpp
 )
 ament_target_dependencies(gazebo_bolt_hardware_plugins
   angles

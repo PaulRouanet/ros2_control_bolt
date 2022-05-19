@@ -22,7 +22,7 @@
 
 #include "angles/angles.h"
 
-#include "gazebo_ros2_control_bolt/gazebo_system_interface.hpp"
+#include "gazebo_ros2_control_bolt/gazebo_bolt_system_interface.hpp"
 
 #include "std_msgs/msg/bool.hpp"
 
@@ -34,7 +34,7 @@ class GazeboBoltSystemPrivate;
 // These class must inherit `gazebo_ros2_control::GazeboSystemInterface` which implements a
 // simulated `ros2_control` `hardware_interface::SystemInterface`.
 
-class GazeboBoltSystem : public GazeboSystemInterface
+class GazeboBoltSystem : public GazeboBoltSystemInterface
 {
 public:
   // Documentation Inherited

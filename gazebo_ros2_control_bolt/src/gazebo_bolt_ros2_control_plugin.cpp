@@ -39,8 +39,8 @@
 
 #include "gazebo_ros/node.hpp"
 
-#include "gazebo_ros2_control_bolt/gazebo_ros2_control_plugin.hpp"
-#include "gazebo_ros2_control_bolt/gazebo_system.hpp"
+#include "gazebo_ros2_control_bolt/gazebo_bolt_ros2_control_plugin.hpp"
+#include "gazebo_ros2_control_bolt/gazebo_bolt_system.hpp"
 
 #include "pluginlib/class_loader.hpp"
 
@@ -84,7 +84,7 @@ public:
 
   // Interface loader
   boost::shared_ptr<pluginlib::ClassLoader<
-      gazebo_ros2_control::GazeboSystemInterface>> robot_hw_sim_loader_;
+      gazebo_ros2_control_bolt::GazeboBoltSystemInterface>> robot_hw_sim_loader_;
 
   // String with the robot description
   std::string robot_description_;
@@ -283,9 +283,9 @@ void GazeboBoltRosControlPlugin::Load(gazebo::physics::ModelPtr parent, sdf::Ele
 
   try {
     impl_->robot_hw_sim_loader_.reset(
-      new pluginlib::ClassLoader<gazebo_ros2_control::GazeboSystemInterface>(
-        "gazebo_ros2_control",
-        "gazebo_ros2_control::GazeboSystemInterface"));
+      new pluginlib::ClassLoader<gazebo_ros2_control_bolt::GazeboBoltSystemInterface>(
+        "gazebo_ros2_control_bolt",
+        "gazebo_ros2_control_bolt::GazeboBoltSystemInterface"));
   } catch (pluginlib::LibraryLoadException & ex) {
     RCLCPP_ERROR(
       impl_->model_nh_->get_logger(), "Failed to create robot simulation interface loader: %s ",
@@ -300,7 +300,7 @@ void GazeboBoltRosControlPlugin::Load(gazebo::physics::ModelPtr parent, sdf::Ele
     RCLCPP_INFO(impl_->model_nh_->get_logger(),
 		"%s",robot_hw_sim_type_str_.c_str());
 
-    auto gazeboSystem = std::unique_ptr<gazebo_ros2_control::GazeboSystemInterface>(
+    auto gazeboSystem = std::unique_ptr<gazebo_ros2_control_bolt::GazeboBoltSystemInterface>(
       impl_->robot_hw_sim_loader_->createUnmanagedInstance(robot_hw_sim_type_str_));
 
     RCLCPP_INFO(impl_->model_nh_->get_logger(),
