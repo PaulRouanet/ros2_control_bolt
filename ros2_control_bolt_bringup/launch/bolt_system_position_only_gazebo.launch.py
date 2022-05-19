@@ -33,7 +33,7 @@ def generate_launch_description():
                     "system_bolt_description.urdf.xacro",
                 ]
             ),
-            " use_sim:=true",
+            " use_sim:=true use_crane:=false",
         ]
     )
 
