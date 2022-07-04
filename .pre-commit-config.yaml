@@ -58,15 +58,11 @@ repos:
       args: ["--ignore=E501"]
 
   # CPP hooks
-  - repo: local
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v14.0.3
     hooks:
       - id: clang-format
-        name: clang-format
-        description: Format files with ClangFormat.
-        entry: clang-format-10
-        language: system
-        files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|js|m|proto|vert)$
-        args: ['-fallback-style=none', '-i']
+        args: [--style=Google]
   # The same options as in ament_cppcheck are used, but its not working...
   #- repo: https://github.com/pocc/pre-commit-hooks
     #rev: v1.1.1
