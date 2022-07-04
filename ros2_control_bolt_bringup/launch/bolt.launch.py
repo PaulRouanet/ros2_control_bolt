@@ -15,7 +15,13 @@
 from inspect import Parameter
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution, EnvironmentVariable
+from launch.substitutions import (
+    Command,
+    FindExecutable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+    EnvironmentVariable,
+)
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -112,28 +118,25 @@ def generate_launch_description():
 
     # Get URDF via xacro
     robot_description_content_expr = [
-
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution(
-                [FindPackageShare(description_package), "urdf", description_file]
-            ),
-            " ",
-            "prefix:=",
-            prefix,
-            " ",
-            "use_sim:=",
-            use_sim,
-            " ",
-            "use_fake_hardware:=",
-            use_fake_hardware,
-            " ",
-            "fake_sensor_commands:=",
-            fake_sensor_commands,
-            " ",
-            "slowdown:=",
-            slowdown,
-        ]
+        PathJoinSubstitution([FindExecutable(name="xacro")]),
+        " ",
+        PathJoinSubstitution([FindPackageShare(description_package), "urdf", description_file]),
+        " ",
+        "prefix:=",
+        prefix,
+        " ",
+        "use_sim:=",
+        use_sim,
+        " ",
+        "use_fake_hardware:=",
+        use_fake_hardware,
+        " ",
+        "fake_sensor_commands:=",
+        fake_sensor_commands,
+        " ",
+        "slowdown:=",
+        slowdown,
+    ]
 
     robot_description_content = Command(robot_description_content_expr)
     robot_description = {"robot_description": robot_description_content}
@@ -151,15 +154,15 @@ def generate_launch_description():
 
     control_node = Node(
         package="controller_manager",
-        prefix = [# Sudo command cause need to be sudoer when we do this node cause it real time
-            'sudo -E env PATH=',
-            EnvironmentVariable("PATH", default_value='${PATH}'),
+        prefix=[  # Sudo command cause need to be sudoer when we do this node cause it real time
+            "sudo -E env PATH=",
+            EnvironmentVariable("PATH", default_value="${PATH}"),
             " LD_LIBRARY_PATH=",
-            EnvironmentVariable("LD_LIBRARY_PATH", default_value='${LD_LIBRARY_PATH}'),
+            EnvironmentVariable("LD_LIBRARY_PATH", default_value="${LD_LIBRARY_PATH}"),
             " PYTHONPATH=",
-            EnvironmentVariable("PYTHONPATH", default_value='${PYTHONPATH}'),
-            " HOME=/tmp "
-            ],
+            EnvironmentVariable("PYTHONPATH", default_value="${PYTHONPATH}"),
+            " HOME=/tmp ",
+        ],
         executable="ros2_control_node",
         parameters=[robot_description, robot_controllers],
         output={
@@ -178,36 +181,36 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         output="log",
-        arguments = ["-d", rviz_config_file],
+        arguments=["-d", rviz_config_file],
     )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner.py",
-        prefix = [# Sudo command cause need to be sudoer when we do this node cause it real time
-            'sudo -E env PATH=',
-            EnvironmentVariable("PATH", default_value='${PATH}'),
+        prefix=[  # Sudo command cause need to be sudoer when we do this node cause it real time
+            "sudo -E env PATH=",
+            EnvironmentVariable("PATH", default_value="${PATH}"),
             " LD_LIBRARY_PATH=",
-            EnvironmentVariable("LD_LIBRARY_PATH", default_value='${LD_LIBRARY_PATH}'),
+            EnvironmentVariable("LD_LIBRARY_PATH", default_value="${LD_LIBRARY_PATH}"),
             " PYTHONPATH=",
-            EnvironmentVariable("PYTHONPATH", default_value='${PYTHONPATH}'),
-            " HOME=/tmp "
-            ],
+            EnvironmentVariable("PYTHONPATH", default_value="${PYTHONPATH}"),
+            " HOME=/tmp ",
+        ],
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner.py",
-        prefix = [# Sudo command cause need to be sudoer when we do this node cause it real time
-            'sudo -E env PATH=',
-            EnvironmentVariable("PATH", default_value='${PATH}'),
+        prefix=[  # Sudo command cause need to be sudoer when we do this node cause it real time
+            "sudo -E env PATH=",
+            EnvironmentVariable("PATH", default_value="${PATH}"),
             " LD_LIBRARY_PATH=",
-            EnvironmentVariable("LD_LIBRARY_PATH", default_value='${LD_LIBRARY_PATH}'),
+            EnvironmentVariable("LD_LIBRARY_PATH", default_value="${LD_LIBRARY_PATH}"),
             " PYTHONPATH=",
-            EnvironmentVariable("PYTHONPATH", default_value='${PYTHONPATH}'),
-            " HOME=/tmp "
-            ],
+            EnvironmentVariable("PYTHONPATH", default_value="${PYTHONPATH}"),
+            " HOME=/tmp ",
+        ],
         arguments=[robot_controller, "-c", "/controller_manager"],
     )
 
