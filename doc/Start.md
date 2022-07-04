@@ -30,7 +30,7 @@ ROS 2 it's the big brother of ROS 1, he adapts the changes of robotics community
 
 ## 2 - Second step, Workspace :
 
-You need to have a `clear workspace` to do some tests or find your files easily. Many differents workspaces exist but for the rest of the tutorial you would be easier to use the same workspace as me.
+You need to have a `clear workspace` to do some tests or find your files easily. Many different workspaces exist but for the rest of the tutorial you would be easier to use the same workspace as me.
 
 1) Having a `local workspace` is better (when you are in LAAS otherwise you dont need it):
 

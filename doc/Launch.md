@@ -15,7 +15,7 @@ All the launch files can be found in the [ros2_control_bringup](https://github.c
 
 When you start a launch file you need to `declare the description` of your launch and inside you declare every argument you need.
 After having declared every argument, you `initialize` them with what you  want to do.
-At the end, you `launch your argument`, then you run another launch file call [bolt.launch.py](https://github.com/Benjamin-Amsellem/ros2_control_bolt/blob/master/ros2_control_bolt_bringup/launch/bolt.launch.py). And in this launch you’ll see the same structure and at the end you run 5 differents `Nodes` and run some `commands`.
+At the end, you `launch your argument`, then you run another launch file call [bolt.launch.py](https://github.com/Benjamin-Amsellem/ros2_control_bolt/blob/master/ros2_control_bolt_bringup/launch/bolt.launch.py). And in this launch you’ll see the same structure and at the end you run 5 different `Nodes` and run some `commands`.
 
 If you need to launch a `real time node`, you must call them as a `Owner user` with the `sudo` command.
 
