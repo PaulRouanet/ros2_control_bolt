@@ -9,16 +9,19 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    arg_world_filename = PathJoinSubstitution([
-           FindPackageShare("gazebo_ros2_control_bolt"),
-           'world', 'bolt_world.world'
-	])
+    arg_world_filename = PathJoinSubstitution(
+        [FindPackageShare("gazebo_ros2_control_bolt"), "world", "bolt_world.world"]
+    )
 
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [PathJoinSubstitution([FindPackageShare("gazebo_ros"), "launch", "gazebo.launch.py"])]
         ),
-        launch_arguments={"verbose": "false", "pause":  "true", "world": arg_world_filename}.items(),
+        launch_arguments={
+            "verbose": "false",
+            "pause": "true",
+            "world": arg_world_filename,
+        }.items(),
     )
 
     # Get URDF via xacro
@@ -61,7 +64,7 @@ def generate_launch_description():
 
     spawn_controller_pveg = Node(
         package="controller_manager",
-	name="control_manager",
+        name="control_manager",
         executable="spawner.py",
         arguments=["position_velocity_effort_gain_controller"],
         output="screen",
