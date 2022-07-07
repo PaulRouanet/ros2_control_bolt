@@ -181,6 +181,18 @@ return_type SystemBoltHardware::configure(const hardware_interface::HardwareInfo
   return return_type::OK;
 }
 
+void SystemBoltHardware::display_robot_state()
+{
+  for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+    std::cout << "joint " << joint.name << " "
+    << hw_commands_[joint.name].position << " "
+    << hw_commands_[joint.name].velocity << " "
+    << hw_commands_[joint.name].effort  << " "
+    << hw_commands_[joint.name].Kp << " "
+    << hw_commands_[joint.name].Kd << std::endl;
+  }
+  std::cout <<" **************************" << std::endl;
+}
 
 return_type SystemBoltHardware::prepare_command_mode_switch
 (
@@ -250,6 +262,8 @@ return_type SystemBoltHardware::prepare_command_mode_switch
     control_mode_[joint.name] = new_modes_[joint.name];
   }
 
+  std::cout << "in prepare_command_mode_switch" << std::endl;
+  display_robot_state();
   return return_type::OK;
 }
 
@@ -418,7 +432,7 @@ return_type SystemBoltHardware::start()
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
     if (std::isnan(hw_states_[joint.name].position)) {
       hw_states_[joint.name] = {0.0, 0.0, 0.0, 3.0, 0.05};
-      hw_commands_[joint.name] = {0.0, 0.0, 0.0, 0.4, 0.05};
+      hw_commands_[joint.name] = {0.0, 0.0, 0.0, 3.0, 0.05};
     }
     joint_name_to_array_index_[joint.name]=0;
   }
@@ -511,25 +525,28 @@ SystemBoltHardware::write()
   Eigen::Vector6d gain_KP;
   Eigen::Vector6d gain_KD;
 
-
   for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-    positions[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].position;
-    velocities[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].velocity;
-    torques[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].effort;
-    gain_KP[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].Kp;
-    gain_KD[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].Kd;
-  }
+      if ((control_mode_[joint.name]==control_mode_t::POS_VEL_EFF_GAINS) ||
+           (control_mode_[joint.name]==control_mode_t::POSITION)) {
+        positions[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].position;
+        velocities[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].velocity;
+        torques[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].effort;
+        gain_KP[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].Kp;
+        gain_KD[joint_name_to_array_index_[joint.name]] = hw_commands_[joint.name].Kd;
+      }
+    }
 
-  // static unsigned int my_perso_counter2 = 0;
-  // if(my_perso_counter2 % 1000 == 0)
-  // {
-  //   std::cout << "positions:" << positions.transpose() << std::endl;
-  //   std::cout << "velocities:" << velocities.transpose() << std::endl;
-  //   std::cout << "torques: " << torques.transpose() << std::endl;
-  //   std::cout << "gain_KP: " << gain_KP.transpose() << std::endl;
-  //   std::cout << "gain_KD: " << gain_KD.transpose() << std::endl;
-  // }
-  // ++my_perso_counter2;
+  static unsigned int my_perso_counter2 = 0;
+  if(my_perso_counter2 % 1000 == 0)
+  {
+    std::cout << "positions:" << positions.transpose() << std::endl;
+    std::cout << "velocities:" << velocities.transpose() << std::endl;
+    std::cout << "torques: " << torques.transpose() << std::endl;
+    std::cout << "gain_KP: " << gain_KP.transpose() << std::endl;
+    std::cout << "gain_KD: " << gain_KD.transpose() << std::endl;
+    std::cout << " " << std::endl;
+  }
+  ++my_perso_counter2;
 
   robot_->joints->SetDesiredPositions(positions);
   robot_->joints->SetDesiredVelocities(velocities);
@@ -537,7 +554,7 @@ SystemBoltHardware::write()
   robot_->joints->SetPositionGains(gain_KP);
   robot_->joints->SetVelocityGains(gain_KD);
 
-  robot_->SendCommandAndWaitEndOfCycle(0.001);
+  robot_->SendCommandAndWaitEndOfCycle(0.00);
 
   return return_type::OK;
 }

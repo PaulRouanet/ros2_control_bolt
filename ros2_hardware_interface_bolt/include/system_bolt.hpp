@@ -129,6 +129,9 @@ private:
   double hw_stop_sec_;
   double hw_slowdown_;
 
+  // Give some information on the current robot state.
+  void display_robot_state();
+
   //Joint number from urdf
   std::map<std::string,int> joint_name_to_array_index_;
 
