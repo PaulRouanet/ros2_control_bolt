@@ -1,7 +1,7 @@
 # Inspiré de config_solo12.yaml
 
 robot:
-    interface: enp6s0f1  #enp3s0(?)
+    interface: enp6s0f0  #enp3s0(?)
     joint_modules:
         motor_numbers: [0, 3, 2, 1, 5, 4]
         motor_constants: 0.025
