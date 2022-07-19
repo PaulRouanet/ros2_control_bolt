@@ -33,15 +33,8 @@ namespace position_velocity_effort_gain_controller{
 
     PosVelTorGainsController::PosVelTorGainsController() : controller_interface::ControllerInterface(),
     rt_command_ptr_(nullptr), joints_command_subscriber_(nullptr){
-        interface_name_ = ros2_control_bolt::HW_IF_GAIN_KP;
+        // interface_name_ = ros2_control_bolt::HW_IF_GAIN_KP;
     }
-
-
-    void PosVelTorGainsController::declare_parameters(){
-        get_node()->declare_parameter<std::vector<std::string>>("joints", std::vector<std::string>());
-        get_node()->declare_parameter<std::string>("interface_name", "");
-    }
-
 
     CallbackReturn PosVelTorGainsController::read_parameters(){
         joint_names_ = get_node()->get_parameter("joints").as_string_array();
@@ -58,10 +51,6 @@ namespace position_velocity_effort_gain_controller{
         if (interface_name_.empty()){
             RCLCPP_ERROR(get_node()->get_logger(), "'interface_name' parameter was empty");
             return CallbackReturn::ERROR;
-        }
-
-        for (const auto & joint : joint_names_){
-            command_interface_types_.push_back(joint + "/" + interface_name_);
         }
 
         return CallbackReturn::SUCCESS;
@@ -107,7 +96,10 @@ namespace position_velocity_effort_gain_controller{
     controller_interface::InterfaceConfiguration PosVelTorGainsController::command_interface_configuration() const{
         controller_interface::InterfaceConfiguration command_interfaces_config;
         command_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
-        command_interfaces_config.names = command_interface_types_;
+
+        for (const auto & joint : joint_names_){
+            command_interfaces_config.names.push_back(joint + "/" + interface_name_);
+        }
 
         return command_interfaces_config;
     }
@@ -115,7 +107,25 @@ namespace position_velocity_effort_gain_controller{
 
     controller_interface::InterfaceConfiguration PosVelTorGainsController::state_interface_configuration() const{
         return controller_interface::InterfaceConfiguration{
-            controller_interface::interface_configuration_type::NONE};
+            controller_interface::interface_configuration_type::NONE
+        };
+    }
+
+    // Fill ordered_interfaces with references to the matching interfaces
+    // in the same order as in joint_names
+    template <typename T> bool get_ordered_interfaces(
+    std::vector<T> & unordered_interfaces, const std::vector<std::string> & joint_names,
+    const std::string & interface_type, std::vector<std::reference_wrapper<T>> & ordered_interfaces){
+
+    for (const auto & joint_name : joint_names){
+        for (auto & command_interface : unordered_interfaces){
+            if ((command_interface.get_name() == joint_name) && (command_interface.get_interface_name() == interface_type)){
+                ordered_interfaces.push_back(std::ref(command_interface));
+            }
+        }
+    }
+
+    return joint_names.size() == ordered_interfaces.size();
     }
 
 

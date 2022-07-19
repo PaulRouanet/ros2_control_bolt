@@ -2,7 +2,7 @@ controller_manager:
   ros__parameters:
     update_rate: 500  # Hz
 
-    forward_command_controller:
+    forward_position_controller:
       type: forward_command_controller/ForwardCommandController
 
     position_velocity_effort_gain_controller:
@@ -21,11 +21,11 @@ position_velocity_effort_gain_controller:
       - FL_HFE
       - FR_KFE
       - FR_HFE
-    origin: [0.0, 0.0, 1.0]
+    origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     interface_name: gain_kp
 
-forward_command_controller:
+forward_position_controller:
   ros__parameters:
     joints:
       - FL_HAA

@@ -70,7 +70,6 @@ namespace position_velocity_effort_gain_controller{
 
             controller_interface::return_type update() override;
 
-            void declare_parameters();
             CallbackReturn read_parameters() ;
 
     };
