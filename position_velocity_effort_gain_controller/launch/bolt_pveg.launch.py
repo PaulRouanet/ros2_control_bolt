@@ -40,7 +40,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "controllers_file",
-            default_value="bolt_controllers.yaml",
+            default_value="bolt_pveg_controller.yaml",
             description="YAML file with the controllers configuration.",
         )
     )
