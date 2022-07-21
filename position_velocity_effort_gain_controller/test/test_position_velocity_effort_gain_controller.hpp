@@ -68,7 +68,7 @@ protected:
   std::unique_ptr<FriendPosVelTorGainsController> controller_;
 
   // dummy joint state value used for tests
-  const std::string joint_name_ = "joint1";
+  const std::vector<std::string> joint_names_ = {"joint1", "joint2", "joint3"};
 
   double pos_cmd_ = 1.1;
   double vel_cmd_ = 2.1;
@@ -76,11 +76,25 @@ protected:
   double kp_cmd_ = 4.1;
   double kd_cmd_ = 5.1;
 
-  CommandInterface joint_1_pos_cmd_{joint_name_, HW_IF_POSITION, &pos_cmd_};
-  CommandInterface joint_1_vel_cmd_{joint_name_, HW_IF_VELOCITY, &vel_cmd_};
-  CommandInterface joint_1_eff_cmd_{joint_name_, HW_IF_EFFORT, &eff_cmd_};
-  CommandInterface joint_1_kp_cmd_{joint_name_, HW_IF_GAIN_KP, &kp_cmd_};
-  CommandInterface joint_1_kd_cmd_{joint_name_, HW_IF_GAIN_KD, &kd_cmd_};
+  CommandInterface joint_1_pos_cmd_{joint_names_[0], HW_IF_POSITION, &pos_cmd_};
+  CommandInterface joint_2_pos_cmd_{joint_names_[1], HW_IF_POSITION, &pos_cmd_};
+  CommandInterface joint_3_pos_cmd_{joint_names_[2], HW_IF_POSITION, &pos_cmd_};
+
+  CommandInterface joint_1_vel_cmd_{joint_names_[0]_, HW_IF_VELOCITY, &vel_cmd_};
+  CommandInterface joint_2_vel_cmd_{joint_names_[1]_, HW_IF_VELOCITY, &vel_cmd_};
+  CommandInterface joint_3_vel_cmd_{joint_names_[2]_, HW_IF_VELOCITY, &vel_cmd_};
+
+  CommandInterface joint_1_eff_cmd_{joint_names_[0], HW_IF_EFFORT, &eff_cmd_};
+  CommandInterface joint_2_eff_cmd_{joint_names_[1], HW_IF_EFFORT, &eff_cmd_};
+  CommandInterface joint_3_eff_cmd_{joint_names_[2], HW_IF_EFFORT, &eff_cmd_};
+
+  CommandInterface joint_1_kp_cmd_{joint_names_[0], HW_IF_GAIN_KP, &kp_cmd_};
+  CommandInterface joint_2_kp_cmd_{joint_names_[1], HW_IF_GAIN_KP, &kp_cmd_};
+  CommandInterface joint_3_kp_cmd_{joint_names_[2], HW_IF_GAIN_KP, &kp_cmd_};
+
+  CommandInterface joint_1_kd_cmd_{joint_names_[0], HW_IF_GAIN_KD, &kd_cmd_};
+  CommandInterface joint_2_kp_cmd_{joint_names_[1], HW_IF_GAIN_KP, &kp_cmd_};
+  CommandInterface joint_3_kp_cmd_{joint_names_[2], HW_IF_GAIN_KP, &kp_cmd_};
 };
 
 #endif  // TEST_POSITION_VELOCITY_EFFORT_GAIN_CONTROLLER_HPP_
