@@ -36,20 +36,41 @@ namespace position_velocity_effort_gain_controller{
         // interface_name_ = ros2_control_bolt::HW_IF_GAIN_KP;
     }
 
+    void PosVelTorGainsController::declare_parameters(){
+        auto_declare("joints", joint_names_);
+        auto_declare("interface_names", interface_names_);
+    }
+
     CallbackReturn PosVelTorGainsController::read_parameters(){
         joint_names_ = get_node()->get_parameter("joints").as_string_array();
+        interface_names_ = get_node()->get_parameter("interface_names").as_string_array();
 
         if (joint_names_.empty()){
-            RCLCPP_ERROR(get_node()->get_logger(), "'joints' parameter was empty");
+            RCLCPP_ERROR(get_node()->get_logger(), "'joint' parameter was empty");
             return CallbackReturn::ERROR;
         }
 
-        if (interface_name_.empty()){
-            interface_name_ = get_node()->get_parameter("interface_name").as_string();
+        if (interface_names_.empty()){
+            RCLCPP_ERROR(get_node()->get_logger(), "'interface_name' parameter was empty");
+            return CallbackReturn::ERROR;
         }
 
-        if (interface_name_.empty()){
-            RCLCPP_ERROR(get_node()->get_logger(), "'interface_name' parameter was empty");
+        for (const auto & joint : joint_names_){
+            for (const auto & interface : interface_names_){
+                command_interface_types_.push_back(joint + "/" + interface);
+            } 
+        }
+
+        return CallbackReturn::SUCCESS;
+    }
+
+
+    CallbackReturn PosVelTorGainsController::init(){
+        try{
+            PosVelTorGainsController::declare_parameters();
+        }
+        catch (const std::exception & e){
+            fprintf(stderr, "Exception thrown during init stage with message: %s \n", e.what());
             return CallbackReturn::ERROR;
         }
 
@@ -57,26 +78,7 @@ namespace position_velocity_effort_gain_controller{
     }
 
 
-    controller_interface::return_type PosVelTorGainsController::init(const std::string & controller_name){
-        auto ret = ControllerInterface::init(controller_name);
-        if(ret != controller_interface::return_type::OK){
-            return ret;
-        }
-
-        try{
-            auto_declare<std::vector<std::string>>("joints", std::vector<std::string>());
-            auto_declare<std::string>("interface_name", "");
-        }
-        catch (const std::exception & e){
-            fprintf(stderr, "Exception thrown during init stage with message: %s \n", e.what());
-            return controller_interface::return_type::ERROR;
-        }
-
-        return controller_interface::return_type::OK;
-    }
-
-
-    CallbackReturn PosVelTorGainsController :: on_configure(
+    CallbackReturn PosVelTorGainsController::on_configure(
         const rclcpp_lifecycle::State & /*previous_state*/){
         auto ret = this->read_parameters();
         if (ret != CallbackReturn::SUCCESS)
@@ -96,10 +98,7 @@ namespace position_velocity_effort_gain_controller{
     controller_interface::InterfaceConfiguration PosVelTorGainsController::command_interface_configuration() const{
         controller_interface::InterfaceConfiguration command_interfaces_config;
         command_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
-
-        for (const auto & joint : joint_names_){
-            command_interfaces_config.names.push_back(joint + "/" + interface_name_);
-        }
+        command_interfaces_config.names = command_interface_types_;
 
         return command_interfaces_config;
     }
@@ -111,25 +110,7 @@ namespace position_velocity_effort_gain_controller{
         };
     }
 
-    // Fill ordered_interfaces with references to the matching interfaces
-    // in the same order as in joint_names
-    template <typename T> bool get_ordered_interfaces(
-    std::vector<T> & unordered_interfaces, const std::vector<std::string> & joint_names,
-    const std::string & interface_type, std::vector<std::reference_wrapper<T>> & ordered_interfaces){
-
-    for (const auto & joint_name : joint_names){
-        for (auto & command_interface : unordered_interfaces){
-            if ((command_interface.get_name() == joint_name) && (command_interface.get_interface_name() == interface_type)){
-                ordered_interfaces.push_back(std::ref(command_interface));
-            }
-        }
-    }
-
-    return joint_names.size() == ordered_interfaces.size();
-    }
-
-
-    CallbackReturn PosVelTorGainsController :: on_activate( const rclcpp_lifecycle::State & /*previous_state*/){
+    CallbackReturn PosVelTorGainsController::on_activate( const rclcpp_lifecycle::State & /*previous_state*/){
         //  check if we have all resources defined in the "points" parameter
         //  also verify that we *only* have the resources defined in the "points" parameter
         // ATTENTION(destogl): Shouldn't we use ordered interface all the time?
@@ -153,14 +134,14 @@ namespace position_velocity_effort_gain_controller{
     }
 
 
-    CallbackReturn PosVelTorGainsController :: on_deactivate( const rclcpp_lifecycle::State & /*previous_state*/){
+    CallbackReturn PosVelTorGainsController::on_deactivate( const rclcpp_lifecycle::State & /*previous_state*/){
         // reset command buffer
         rt_command_ptr_ = realtime_tools::RealtimeBuffer<std::shared_ptr<CmdType>>(nullptr);
         return CallbackReturn::SUCCESS;
     }
 
 
-    controller_interface :: return_type PosVelTorGainsController::update(){
+    controller_interface::return_type PosVelTorGainsController::update(){
         auto joint_commands = rt_command_ptr_.readFromRT();
 
         // no command received yet

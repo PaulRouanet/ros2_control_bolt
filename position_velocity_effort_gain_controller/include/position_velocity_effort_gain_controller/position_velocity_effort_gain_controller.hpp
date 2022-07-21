@@ -47,6 +47,9 @@ namespace position_velocity_effort_gain_controller{
             realtime_tools::RealtimeBuffer<std::shared_ptr<CmdType>> rt_command_ptr_;
             rclcpp::Subscription<CmdType>::SharedPtr joints_command_subscriber_;
 
+            std::string joint_name_;
+            std::vector<std::string> interface_names_;
+
         public:
 
             PosVelTorGainsController();
@@ -57,7 +60,9 @@ namespace position_velocity_effort_gain_controller{
 
             controller_interface::InterfaceConfiguration state_interface_configuration() const override;
 
-            controller_interface::return_type init(const std::string & controller_name) ;
+            //controller_interface::return_type init();//const std::string & controller_name) ;
+
+            CallbackReturn init();
 
             CallbackReturn on_configure(
             const rclcpp_lifecycle::State & previous_state) ;
@@ -69,6 +74,8 @@ namespace position_velocity_effort_gain_controller{
             const rclcpp_lifecycle::State & previous_state) ;
 
             controller_interface::return_type update() override;
+
+             void declare_parameters();
 
             CallbackReturn read_parameters() ;
 
