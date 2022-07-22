@@ -34,7 +34,8 @@ using ros2_control_bolt::HW_IF_GAIN_KP;
 using ros2_control_bolt::HW_IF_GAIN_KD;
 
 // subclassing and friending so we can access member variables
-class FriendPosVelTorGainsController : public position_velocity_effort_gain_controller::PosVelTorGainsController
+class FriendPosVelTorGainsController
+: public position_velocity_effort_gain_controller::PosVelTorGainsController
 {
   FRIEND_TEST(PosVelTorGainsControllerTest, JointsParameterNotSet);
   FRIEND_TEST(PosVelTorGainsControllerTest, InterfaceParameterNotSet);
@@ -61,7 +62,7 @@ public:
   void SetUp();
   void TearDown();
 
-  void SetUpController(bool set_params_and_activate = false);
+  void SetUpController();//bool set_params_and_activate = false);
   void SetParametersAndActivateController();
 
 protected:
@@ -80,9 +81,9 @@ protected:
   CommandInterface joint_2_pos_cmd_{joint_names_[1], HW_IF_POSITION, &pos_cmd_};
   CommandInterface joint_3_pos_cmd_{joint_names_[2], HW_IF_POSITION, &pos_cmd_};
 
-  CommandInterface joint_1_vel_cmd_{joint_names_[0]_, HW_IF_VELOCITY, &vel_cmd_};
-  CommandInterface joint_2_vel_cmd_{joint_names_[1]_, HW_IF_VELOCITY, &vel_cmd_};
-  CommandInterface joint_3_vel_cmd_{joint_names_[2]_, HW_IF_VELOCITY, &vel_cmd_};
+  CommandInterface joint_1_vel_cmd_{joint_names_[0], HW_IF_VELOCITY, &vel_cmd_};
+  CommandInterface joint_2_vel_cmd_{joint_names_[1], HW_IF_VELOCITY, &vel_cmd_};
+  CommandInterface joint_3_vel_cmd_{joint_names_[2], HW_IF_VELOCITY, &vel_cmd_};
 
   CommandInterface joint_1_eff_cmd_{joint_names_[0], HW_IF_EFFORT, &eff_cmd_};
   CommandInterface joint_2_eff_cmd_{joint_names_[1], HW_IF_EFFORT, &eff_cmd_};
@@ -93,8 +94,14 @@ protected:
   CommandInterface joint_3_kp_cmd_{joint_names_[2], HW_IF_GAIN_KP, &kp_cmd_};
 
   CommandInterface joint_1_kd_cmd_{joint_names_[0], HW_IF_GAIN_KD, &kd_cmd_};
-  CommandInterface joint_2_kp_cmd_{joint_names_[1], HW_IF_GAIN_KP, &kp_cmd_};
-  CommandInterface joint_3_kp_cmd_{joint_names_[2], HW_IF_GAIN_KP, &kp_cmd_};
+  CommandInterface joint_2_kd_cmd_{joint_names_[1], HW_IF_GAIN_KD, &kd_cmd_};
+  CommandInterface joint_3_kd_cmd_{joint_names_[2], HW_IF_GAIN_KD, &kd_cmd_};
+
+  // CommandInterface joint_1_pos_cmd_{joint_name_, HW_IF_POSITION, &pos_cmd_};
+  // CommandInterface joint_1_vel_cmd_{joint_name_, HW_IF_VELOCITY, &vel_cmd_};
+  // CommandInterface joint_1_eff_cmd_{joint_name_, HW_IF_EFFORT, &eff_cmd_};
+  // CommandInterface joint_1_kp_cmd_{joint_names_, HW_IF_GAIN_KP, &kp_cmd_};
+  // CommandInterface joint_1_kd_cmd_{joint_names_, HW_IF_GAIN_KD, &kd_cmd_};
 };
 
 #endif  // TEST_POSITION_VELOCITY_EFFORT_GAIN_CONTROLLER_HPP_

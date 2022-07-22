@@ -7,8 +7,21 @@ controller_manager:
     forward_position_controller:
       type: forward_command_controller/ForwardCommandController
 
-    position_velocity_effort_gain_controller:
+    position_controller:
       type: position_velocity_effort_gain_controller/PosVelTorGainsController
+
+    velocity_controller:
+      type: position_velocity_effort_gain_controller/PosVelTorGainsController
+
+    effort_controller:
+      type: position_velocity_effort_gain_controller/PosVelTorGainsController
+
+    kp_controller:
+      type: position_velocity_effort_gain_controller/PosVelTorGainsController
+
+    kd_controller:
+      type: position_velocity_effort_gain_controller/PosVelTorGainsController
+
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -26,7 +39,7 @@ forward_position_controller:
 
     interface_name: position
 
-position_velocity_effort_gain_controller:
+position_controller:
   ros__parameters:
     joints:
       - FL_HAA
@@ -37,4 +50,56 @@ position_velocity_effort_gain_controller:
       - FR_HFE
     origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-    interface_name: gain_kp
+    interface_names: position
+
+velocity_controller:
+  ros__parameters:
+    joints:
+      - FL_HAA
+      - FR_HAA
+      - FL_KFE
+      - FL_HFE
+      - FR_KFE
+      - FR_HFE
+    origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    interface_names: velocity
+
+effort_controller:
+  ros__parameters:
+    joints:
+      - FL_HAA
+      - FR_HAA
+      - FL_KFE
+      - FL_HFE
+      - FR_KFE
+      - FR_HFE
+    origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    interface_names: effort
+
+kp_controller:
+  ros__parameters:
+    joints:
+      - FL_HAA
+      - FR_HAA
+      - FL_KFE
+      - FL_HFE
+      - FR_KFE
+      - FR_HFE
+    origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    interface_names: gain_kp
+
+kd_controller:
+  ros__parameters:
+    joints:
+      - FL_HAA
+      - FR_HAA
+      - FL_KFE
+      - FL_HFE
+      - FR_KFE
+      - FR_HFE
+    origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    interface_names: gain_kd

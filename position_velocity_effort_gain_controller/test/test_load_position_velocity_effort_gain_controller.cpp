@@ -36,5 +36,5 @@ TEST(TestLoadPosVelTorGainsController, load_controller)
     executor, "test_controller_manager");
 
   ASSERT_NO_THROW(cm.load_controller(
-    "test_position_velocity_effort_gain_controller", "position_velocity_effort_gain_controller/PosVelTorGainsController"));
+    "position_velocity_effort_gain_controller", "position_velocity_effort_gain_controller/PosVelTorGainsController"));
 }

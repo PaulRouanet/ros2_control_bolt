@@ -51,7 +51,11 @@ namespace position_velocity_effort_gain_controller{
         }
 
         if (interface_names_.empty()){
-            RCLCPP_ERROR(get_node()->get_logger(), "'interface_name' parameter was empty");
+            interface_names_ = node_->get_parameter("interface_names").as_string_array();
+        }
+
+        if (interface_names_.empty()){
+            RCLCPP_ERROR(get_node()->get_logger(), "'interface_names' parameter was empty");
             return CallbackReturn::ERROR;
         }
 
@@ -65,16 +69,20 @@ namespace position_velocity_effort_gain_controller{
     }
 
 
-    CallbackReturn PosVelTorGainsController::init(){
+    controller_interface::return_type PosVelTorGainsController::init(const std::string & controller_name){
+        auto ret = ControllerInterface::init(controller_name);
+        if (ret != controller_interface::return_type::OK){
+            return ret;
+        }
         try{
             PosVelTorGainsController::declare_parameters();
         }
         catch (const std::exception & e){
             fprintf(stderr, "Exception thrown during init stage with message: %s \n", e.what());
-            return CallbackReturn::ERROR;
+            return controller_interface::return_type::ERROR;
         }
 
-        return CallbackReturn::SUCCESS;
+        return controller_interface::return_type::OK;
     }
 
 
@@ -109,6 +117,7 @@ namespace position_velocity_effort_gain_controller{
             controller_interface::interface_configuration_type::NONE
         };
     }
+
 
     CallbackReturn PosVelTorGainsController::on_activate( const rclcpp_lifecycle::State & /*previous_state*/){
         //  check if we have all resources defined in the "points" parameter
