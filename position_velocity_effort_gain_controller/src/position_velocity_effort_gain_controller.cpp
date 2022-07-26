@@ -59,10 +59,20 @@ namespace position_velocity_effort_gain_controller{
             return CallbackReturn::ERROR;
         }
 
-        for (const auto & joint : joint_names_){
-            for (const auto & interface : interface_names_){
+        // for (const auto & joint : joint_names_){
+        //     for (const auto & interface : interface_names_){
+        //         command_interface_types_.push_back(joint + "/" + interface);
+        //     } 
+        // }
+
+        for (const auto & interface : interface_names_){
+            std::vector<std::string>joint_interface;
+            for (const auto & joint : joint_names_){
+                joint_interface.push_back(joint + "/" + interface);
                 command_interface_types_.push_back(joint + "/" + interface);
-            } 
+            }
+            //command_interface_types_.push_back(" ");
+            //command_interface_types_.push_back(joint_interface);
         }
 
         return CallbackReturn::SUCCESS;
@@ -106,7 +116,7 @@ namespace position_velocity_effort_gain_controller{
     controller_interface::InterfaceConfiguration PosVelTorGainsController::command_interface_configuration() const{
         controller_interface::InterfaceConfiguration command_interfaces_config;
         command_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
-        command_interfaces_config.names = command_interface_types_;
+        //command_interfaces_config.names = command_interface_types_;
 
         return command_interfaces_config;
     }

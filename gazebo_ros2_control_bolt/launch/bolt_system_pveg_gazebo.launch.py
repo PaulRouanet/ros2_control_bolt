@@ -62,6 +62,13 @@ def generate_launch_description():
         output="screen",
     )
 
+    spawn_controller_pveg = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        arguments=["pveg_controller"],
+        output="screen",
+    )
+
     spawn_controller_p = Node(
         package="controller_manager",
         executable="spawner.py",
@@ -105,11 +112,11 @@ def generate_launch_description():
             node_robot_state_publisher,
             spawn_entity,
             spawn_controller,
-            # spawn_controller_pveg,
-            spawn_controller_p
-            spawn_controller_v 
-            spawn_controller_e 
-            spawn_controller_kp 
-            spawn_controller_kd 
+            spawn_controller_pveg,
+            # spawn_controller_p,
+            # spawn_controller_v,
+            # spawn_controller_e, 
+            # spawn_controller_kp, 
+            # spawn_controller_kd, 
         ]
     )

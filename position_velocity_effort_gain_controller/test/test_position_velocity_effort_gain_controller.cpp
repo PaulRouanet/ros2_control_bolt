@@ -90,19 +90,23 @@ void PosVelTorGainsControllerTest::SetUpController()
   command_ifs.emplace_back(joint_2_kd_cmd_);
   command_ifs.emplace_back(joint_3_kd_cmd_);
   controller_->assign_interfaces(std::move(command_ifs), {});
+
+    // if (set_params_and_activate){
+    //   SetParametersAndActivateController();
+    // }
 }
 
-// void PosVelTorGainsControllerTest::SetParametersAndActivateController()
-// {
-//   controller_->get_node()->set_parameter({"joint", "joint1"});
-//   controller_->get_node()->set_parameter(
-//     {"interface_names", std::vector<std::string>{"position", "velocity", "effort", "gain_kp", "gain_kd"}});
+void PosVelTorGainsControllerTest::SetParametersAndActivateController()
+{
+  controller_->get_node()->set_parameter({"joints", joint_names_});
+  controller_->get_node()->set_parameter(
+    {"interface_names", std::vector<std::string>{"position", "velocity", "effort", "gain_kp", "gain_kd"}});
 
-//   auto node_state = controller_->get_node()->configure();
-//   ASSERT_EQ(node_state.id(), lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE);
-//   node_state = controller_->get_node()->activate();
-//   ASSERT_EQ(node_state.id(), lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE);
-// }
+  auto node_state = controller_->configure();
+  ASSERT_EQ(node_state.id(), lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE);
+  node_state = controller_->activate();
+  ASSERT_EQ(node_state.id(), lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE);
+}
 
 TEST_F(PosVelTorGainsControllerTest, JointsParameterNotSet)
 {
@@ -115,16 +119,6 @@ TEST_F(PosVelTorGainsControllerTest, JointsParameterNotSet)
   
 }
 
-TEST_F(PosVelTorGainsControllerTest, JointsParameterIsEmpty)
-{
-  SetUpController();
-  controller_->get_node()->set_parameter({"joints", std::vector<std::string>()});
-  controller_->get_node()->set_parameter({"interface_names", std::vector<std::string>()});
-
-  // configure failed, 'joints' is empty
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
-}
-
 TEST_F(PosVelTorGainsControllerTest, InterfaceParameterNotSet)
 {
   SetUpController();
@@ -134,13 +128,23 @@ TEST_F(PosVelTorGainsControllerTest, InterfaceParameterNotSet)
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()),CallbackReturn::ERROR);
 }
 
+TEST_F(PosVelTorGainsControllerTest, JointsParameterIsEmpty)
+{
+  SetUpController();
+  controller_->get_node()->set_parameter({"joints", ""});//std::vector<std::string>()}");
+  controller_->get_node()->set_parameter({"interface_names", std::vector<std::string>()});
+
+  // configure failed, 'joints' is empty
+  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+}
+
 TEST_F(PosVelTorGainsControllerTest, InterfaceParameterEmpty)
 {
   SetUpController();
   controller_->get_node()->set_parameter({"joints", joint_names_});
   controller_->get_node()->set_parameter({"interface_names", std::vector<std::string>()});
 
-  // configure failed, 'interface_name' is empty
+  // configure failed, 'interface_names' is empty
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()),CallbackReturn::ERROR);
 }
 
@@ -167,17 +171,61 @@ TEST_F(PosVelTorGainsControllerTest, ActivateWithWrongJointsNamesFails)
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
 
-  controller_->get_node()->set_parameter({"joints", std::vector<std::string>{"joint1", "joint2"}});
+}
+
+TEST_F(PosVelTorGainsControllerTest, ActivateWithWrongInterfaceNamesFails)
+{
+  SetUpController();
+  controller_->get_node()->set_parameter({"joints", std::vector<std::string>{"joint1", "joint4"}});
+  controller_->get_node()->set_parameter(
+  {"interface_names", std::vector<std::string>{"position", "velocity", "effort", "acceleration", "gain_kd"}});
 
   // activate failed, 'acceleration' is not a registered interface for `joint1`
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
 }
 
+TEST_F(PosVelTorGainsControllerTest, ActivateSuccess)
+{
+  SetUpController();
+
+  controller_->get_node()->set_parameter({"joints", joint_names_});
+  controller_->get_node()->set_parameter({"interface_names", std::vector<std::string>{"position", "velocity", "effort", "gain_kp", "gain_kd"}});
+
+  // activate successful
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),CallbackReturn::SUCCESS);
+
+  // check joint commands are the default ones
+  ASSERT_EQ(joint_1_pos_cmd_.get_value(), 1.1);
+  ASSERT_EQ(joint_2_pos_cmd_.get_value(), 1.1);
+  ASSERT_EQ(joint_3_pos_cmd_.get_value(), 1.1);
+
+  ASSERT_EQ(joint_1_vel_cmd_.get_value(), 2.1);
+  ASSERT_EQ(joint_2_vel_cmd_.get_value(), 2.1);
+  ASSERT_EQ(joint_3_vel_cmd_.get_value(), 2.1);
+
+  ASSERT_EQ(joint_1_eff_cmd_.get_value(), 3.1);
+  ASSERT_EQ(joint_2_eff_cmd_.get_value(), 3.1);
+  ASSERT_EQ(joint_3_eff_cmd_.get_value(), 3.1);
+
+  ASSERT_EQ(joint_1_kp_cmd_.get_value(), 4.1);
+  ASSERT_EQ(joint_2_kp_cmd_.get_value(), 4.1);
+  ASSERT_EQ(joint_3_kp_cmd_.get_value(), 4.1);
+  
+  ASSERT_EQ(joint_1_kd_cmd_.get_value(), 5.1);
+  ASSERT_EQ(joint_2_kd_cmd_.get_value(), 5.1);
+  ASSERT_EQ(joint_3_kd_cmd_.get_value(), 5.1);
+}
+
 TEST_F(PosVelTorGainsControllerTest, CommandSuccessTest)
 {
   SetUpController();
   controller_->get_node()->set_parameter({"joints", joint_names_});
+  controller_->get_node()->set_parameter({"interface_names", std::vector<std::string>{"position", "velocity", "effort", "gain_kp", "gain_kd"}});
+
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
 
   // update successful though no command has been send yet
@@ -238,6 +286,8 @@ TEST_F(PosVelTorGainsControllerTest, WrongCommandCheckTest)
 {
   SetUpController();
   controller_->get_node()->set_parameter({"joints", joint_names_});
+  controller_->get_node()->set_parameter({"interface_names", std::vector<std::string>{"position", "velocity", "effort", "gain_kp", "gain_kd"}});
+
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
 
   // send command with wrong number of joints
@@ -274,6 +324,8 @@ TEST_F(PosVelTorGainsControllerTest, NoCommandCheckTest)
 {
   SetUpController();
   controller_->get_node()->set_parameter({"joints", joint_names_});
+  controller_->get_node()->set_parameter({"interface_names", std::vector<std::string>{"position", "velocity", "effort", "gain_kp", "gain_kd"}});
+
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
 
   // update successful, no command received yet
@@ -305,6 +357,7 @@ TEST_F(PosVelTorGainsControllerTest, CommandCallbackTest)
 {
   SetUpController();
   controller_->get_node()->set_parameter({"joints", joint_names_});
+  controller_->get_node()->set_parameter({"interface_names", std::vector<std::string>{"position", "velocity", "effort", "gain_kp", "gain_kd"}});
 
   // default values
   ASSERT_EQ(joint_1_pos_cmd_.get_value(), 1.1);
@@ -372,43 +425,43 @@ TEST_F(PosVelTorGainsControllerTest, CommandCallbackTest)
   ASSERT_EQ(joint_3_kd_cmd_.get_value(), 50.0);
 }
 
-TEST_F(PosVelTorGainsControllerTest, StopJointsOnDeactivateTest)
-{
-  SetUpController();
-  controller_->get_node()->set_parameter({"joints", joint_names_});
+// TEST_F(PosVelTorGainsControllerTest, StopJointsOnDeactivateTest)
+// {
+//   SetUpController();
+//   controller_->get_node()->set_parameter({"joints", joint_names_});
 
-  // configure successful
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+//   // configure successful
+//   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
 
-  // check joint commands are still the default ones
-  ASSERT_EQ(joint_1_pos_cmd_.get_value(), 1.1);
-  ASSERT_EQ(joint_2_pos_cmd_.get_value(), 1.1);
-  ASSERT_EQ(joint_3_pos_cmd_.get_value(), 1.1);
+//   // check joint commands are still the default ones
+//   ASSERT_EQ(joint_1_pos_cmd_.get_value(), 1.1);
+//   ASSERT_EQ(joint_2_pos_cmd_.get_value(), 1.1);
+//   ASSERT_EQ(joint_3_pos_cmd_.get_value(), 1.1);
 
-  ASSERT_EQ(joint_1_vel_cmd_.get_value(), 2.1);
-  ASSERT_EQ(joint_2_vel_cmd_.get_value(), 2.1);
-  ASSERT_EQ(joint_3_vel_cmd_.get_value(), 2.1);
+//   ASSERT_EQ(joint_1_vel_cmd_.get_value(), 2.1);
+//   ASSERT_EQ(joint_2_vel_cmd_.get_value(), 2.1);
+//   ASSERT_EQ(joint_3_vel_cmd_.get_value(), 2.1);
 
-  ASSERT_EQ(joint_1_eff_cmd_.get_value(), 3.1);
-  ASSERT_EQ(joint_2_eff_cmd_.get_value(), 3.1);
-  ASSERT_EQ(joint_3_eff_cmd_.get_value(), 3.1);
+//   ASSERT_EQ(joint_1_eff_cmd_.get_value(), 3.1);
+//   ASSERT_EQ(joint_2_eff_cmd_.get_value(), 3.1);
+//   ASSERT_EQ(joint_3_eff_cmd_.get_value(), 3.1);
 
-  ASSERT_EQ(joint_1_kp_cmd_.get_value(), 4.1);
-  ASSERT_EQ(joint_2_kp_cmd_.get_value(), 4.1);
-  ASSERT_EQ(joint_3_kp_cmd_.get_value(), 4.1);
+//   ASSERT_EQ(joint_1_kp_cmd_.get_value(), 4.1);
+//   ASSERT_EQ(joint_2_kp_cmd_.get_value(), 4.1);
+//   ASSERT_EQ(joint_3_kp_cmd_.get_value(), 4.1);
   
-  ASSERT_EQ(joint_1_kd_cmd_.get_value(), 5.1);
-  ASSERT_EQ(joint_2_kd_cmd_.get_value(), 5.1);
-  ASSERT_EQ(joint_3_kd_cmd_.get_value(), 5.1);
+//   ASSERT_EQ(joint_1_kd_cmd_.get_value(), 5.1);
+//   ASSERT_EQ(joint_2_kd_cmd_.get_value(), 5.1);
+//   ASSERT_EQ(joint_3_kd_cmd_.get_value(), 5.1);
 
-  // stop the controller
-  ASSERT_EQ(controller_->on_deactivate(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+//   // stop the controller
+//   ASSERT_EQ(controller_->on_deactivate(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
 
-  // check joint commands are now zero
-  ASSERT_EQ(joint_1_pos_cmd_.get_value(), 0.0);
-  ASSERT_EQ(joint_2_pos_cmd_.get_value(), 0.0);
-  ASSERT_EQ(joint_3_pos_cmd_.get_value(), 0.0);
-}
+//   // check joint commands are now zero
+//   ASSERT_EQ(joint_1_pos_cmd_.get_value(), 0.0);
+//   ASSERT_EQ(joint_2_pos_cmd_.get_value(), 0.0);
+//   ASSERT_EQ(joint_3_pos_cmd_.get_value(), 0.0);
+// }
 
 ////////////
 
