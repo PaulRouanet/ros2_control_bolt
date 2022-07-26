@@ -7,21 +7,6 @@ controller_manager:
     forward_position_controller:
       type: forward_command_controller/ForwardCommandController
 
-    position_controller:
-      type: position_velocity_effort_gain_controller/PosVelTorGainsController
-
-    velocity_controller:
-      type: position_velocity_effort_gain_controller/PosVelTorGainsController
-
-    effort_controller:
-      type: position_velocity_effort_gain_controller/PosVelTorGainsController
-
-    kp_controller:
-      type: position_velocity_effort_gain_controller/PosVelTorGainsController
-
-    kd_controller:
-      type: position_velocity_effort_gain_controller/PosVelTorGainsController
-
     pveg_controller:
       type: position_velocity_effort_gain_controller/PosVelTorGainsController
 
@@ -52,69 +37,5 @@ pveg_controller:
       - FR_HFE
     origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-    interface_names: [position,velocity,effort,gain_kp,gaib_kd]
-
-# position_controller:
-#   ros__parameters:
-#     joints:
-#       - FL_HAA
-#       - FR_HAA
-#       - FL_KFE
-#       - FL_HFE
-#       - FR_KFE
-#       - FR_HFE
-#     origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-#     interface_names: position
-
-# velocity_controller:
-#   ros__parameters:
-#     joints:
-#       - FL_HAA
-#       - FR_HAA
-#       - FL_KFE
-#       - FL_HFE
-#       - FR_KFE
-#       - FR_HFE
-#     origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-#     interface_names: velocity
-
-# effort_controller:
-#   ros__parameters:
-#     joints:
-#       - FL_HAA
-#       - FR_HAA
-#       - FL_KFE
-#       - FL_HFE
-#       - FR_KFE
-#       - FR_HFE
-#     origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-#     interface_names: effort
-
-# kp_controller:
-#   ros__parameters:
-#     joints:
-#       - FL_HAA
-#       - FR_HAA
-#       - FL_KFE
-#       - FL_HFE
-#       - FR_KFE
-#       - FR_HFE
-#     origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-#     interface_names: gain_kp
-
-# kd_controller:
-#   ros__parameters:
-#     joints:
-#       - FL_HAA
-#       - FR_HAA
-#       - FL_KFE
-#       - FL_HFE
-#       - FR_KFE
-#       - FR_HFE
-#     origin: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-#     interface_names: gain_kd
+    interface_names: [position,velocity,effort,gain_kp,gain_kd]
+    

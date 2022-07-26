@@ -62,49 +62,12 @@ def generate_launch_description():
         output="screen",
     )
 
-    spawn_controller_pveg = Node(
+    spawn_pveg_controller = Node(
         package="controller_manager",
         executable="spawner.py",
         arguments=["pveg_controller"],
         output="screen",
     )
-
-    spawn_controller_p = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=["position_controller"],
-        output="screen",
-    )
-
-    spawn_controller_v = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=["velocity_controller"],
-        output="screen",
-    )
-
-    spawn_controller_e = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=["effort_controller"],
-        output="screen",
-    )
-
-    spawn_controller_kp = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=["kp_controller"],
-        output="screen",
-    )
-
-    spawn_controller_kd = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=["kd_controller"],
-        output="screen",
-    )
-
-
 
     return LaunchDescription(
         [
@@ -112,11 +75,6 @@ def generate_launch_description():
             node_robot_state_publisher,
             spawn_entity,
             spawn_controller,
-            spawn_controller_pveg,
-            # spawn_controller_p,
-            # spawn_controller_v,
-            # spawn_controller_e, 
-            # spawn_controller_kp, 
-            # spawn_controller_kd, 
+            spawn_pveg_controller, 
         ]
     )
