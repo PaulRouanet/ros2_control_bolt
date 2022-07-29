@@ -14,11 +14,9 @@
 
   <exec_depend>ros2_control_bolt_bringup</exec_depend>
   <exec_depend>ros2_description_bolt</exec_depend>
-<!---  <exec_depend>diffbot_description</exec_depend>
-  <exec_depend>rrbot_description</exec_depend> -->
   <exec_depend>ros2_hardware_interface_bolt</exec_depend>
   <exec_depend>ros2_control_test_nodes</exec_depend>
-
+  <exec_depend>gazebo_ros2_control_bolt</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

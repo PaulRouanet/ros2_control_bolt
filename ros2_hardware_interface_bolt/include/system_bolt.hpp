@@ -16,12 +16,10 @@
 #define ROS2_CONTROL_BOLT__SYSTEM_BOLT_HPP_
 
 /*Connection to ODRI for read sensors and write commands*/
-#include "odri_control_interface/calibration.hpp"
+#include <odri_control_interface/calibration.hpp>
 #include "odri_control_interface/robot.hpp"
 #include "odri_control_interface/imu.hpp"
 #include "master_board_sdk/master_board_interface.h"
-
-
 
 #include <memory>
 #include <set>
@@ -39,6 +37,7 @@
 #include "visibility_control.h"
 #include "semantic_components/imu_sensor.hpp"
 
+#include "system_interface_bolt.hpp"
 
 
 using hardware_interface::return_type;
@@ -46,7 +45,7 @@ using hardware_interface::return_type;
 #define rt_printf printf
 
 /**
- * @brief Usefull tool for the demos and programs in order to print data in
+ * @brief Useful tool for the demos and programs in order to print data in
  * real time.
  *
  * @param v_name  is a string defining the data to print.
@@ -83,62 +82,6 @@ namespace ros2_control_bolt
 {
 
 
-struct PosVelEffortGains
-{
-  double position;
-  double velocity;
-  double effort;
-  double Kp;
-  double Kd;
-};
-
-struct GyroAccLineEulerQuater
-{
-  double gyro_x;
-  double gyro_y;
-  double gyro_z;
-  double accelero_x;
-  double accelero_y;
-  double accelero_z;
-  double line_acc_x;
-  double line_acc_y;
-  double line_acc_z;
-  double euler_x;
-  double euler_y;
-  double euler_z;
-  double quater_x;
-  double quater_y;
-  double quater_z;
-  double quater_w;
-};
-
-constexpr const auto HW_IF_GAIN_KP = "gain_kp";
-constexpr const auto HW_IF_GAIN_KD = "gain_kd";
-
-std::set<std::string> bolt_list_of_cmd_inter {
-  "position",
-  "velocity",
-  "effort",
-  "gain_kp",
-  "gain_kd"
-};
-
-std::set<std::string> bolt_list_of_state_inter {
-  "position",
-  "velocity",
-  "effort",
-  "gain_kp",
-  "gain_kd"
-};
-
-enum control_mode_t {
-  POSITION,
-  VELOCITY,
-  EFFORT,
-  POS_VEL_EFF_GAINS,
-  NO_VALID_MODE
-};
-
 class SystemBoltHardware : public
   hardware_interface::BaseInterface<hardware_interface::SystemInterface>
 {
@@ -147,10 +90,7 @@ public:
   RCLCPP_SHARED_PTR_DEFINITIONS(SystemBoltHardware)
 
   ROS2_CONTROL_BOLT_PUBLIC
-  return_type configure();
-
-  ROS2_CONTROL_BOLT_PUBLIC
-  return_type init_robot();
+  hardware_interface::return_type configure(const hardware_interface::HardwareInfo & system_info) override;
 
   ROS2_CONTROL_BOLT_PUBLIC
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
@@ -162,10 +102,10 @@ public:
   return_type prepare_command_mode_switch(
     const std::vector<std::string> & start_interfaces,
     const std::vector<std::string> & stop_interfaces) override;
-  
+
   ROS2_CONTROL_BOLT_PUBLIC
   return_type calibration();
-  
+
   ROS2_CONTROL_BOLT_PUBLIC
   return_type start() override;
 
@@ -189,8 +129,11 @@ private:
   double hw_stop_sec_;
   double hw_slowdown_;
 
+  // Give some information on the current robot state.
+  void display_robot_state();
+
   //Joint number from urdf
-  std::map<std::string,int> joint_name_to_motor_nb_;
+  std::map<std::string,int> joint_name_to_array_index_;
 
   // Store the command for the simulated robot
   std::map<std::string,PosVelEffortGains> hw_commands_;
@@ -214,16 +157,17 @@ private:
   // IMU
   Eigen::Vector3l rotate_vector_;
   Eigen::Vector4l orientation_vector_;
-  
+
 
   //Network id
   std::string eth_interface_;
 
-  //robot 
+  //robot
   std::shared_ptr<odri_control_interface::Robot> robot_;
   std::shared_ptr<odri_control_interface::JointModules> joints_;
+  std::shared_ptr<odri_control_interface::JointCalibrator> calib_;
   std::shared_ptr<MasterBoardInterface> main_board_ptr_;
-  
+
 
   double motor_constants_;
   double gear_ratios_;

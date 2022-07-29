@@ -72,7 +72,7 @@ add_project_dependency(master_board_sdk REQUIRED)
 add_project_dependency(odri_control_interface REQUIRED)
 add_project_dependency(controller_interface REQUIRED)
 
-# Usefull for system_bolt
+# Useful for system_bolt
 #add_project_dependency(hardware_interface REQUIRED)
 #add_project_dependency(ament_cmake REQUIRED)
 #add_project_dependency(pluginlib REQUIRED)
@@ -159,15 +159,37 @@ if(BUILD_PYTHON_INTERFACE)
 
 endif(BUILD_PYTHON_INTERFACE)
 
+# --- HARDWARE CALIBRATION EXECUTABLE --------------------------------------
+
+set(exe_name bolt_hardware_calibration)
+add_executable(${exe_name} src/${exe_name}.cpp)
+target_link_libraries(${exe_name} ${PROJECT_NAME})
+target_compile_definitions(
+  ${exe_name}
+  PUBLIC CONFIG_BOLT_YAML="${PROJECT_SOURCE_DIR}/../ros2_description_bolt/config/bolt_config.yaml")
+ament_target_dependencies(
+  ${exe_name}
+  controller_interface
+  hardware_interface
+  pluginlib
+  rclcpp
+  odri_control_interface
+  master_board_sdk
+)
+# install(TARGETS ${exe_name} DESTINATION bin)
+install (TARGETS ${exe_name}
+        RUNTIME DESTINATION lib/${PROJECT_NAME})
+
+
 # --- CHECK DEMOS -----------------------------------------------------------
 macro(create_bolt_demo source)
 
-  set(demo_name ${PROJECT_NAME}_${source})
+  set(demo_name ${source})
   add_executable(${demo_name} test/${source}.cpp)
   target_link_libraries(${demo_name} ${PROJECT_NAME})
   target_compile_definitions(
     ${demo_name}
-    PUBLIC CONFIG_BOLT_YAML="${PROJECT_SOURCE_DIR}/test/config_bolt.yaml")
+    PUBLIC CONFIG_BOLT_YAML="${PROJECT_SOURCE_DIR}/../ros2_description_bolt/config/bolt_config.yaml")
   ament_target_dependencies(
   	${demo_name}
     controller_interface
@@ -176,15 +198,15 @@ macro(create_bolt_demo source)
   	rclcpp
   	odri_control_interface
     master_board_sdk
-	)	
-  install(TARGETS ${demo_name} DESTINATION bin)
+	)
+  # install(TARGETS ${demo_name} DESTINATION bin)
+  install (TARGETS ${demo_name}
+          RUNTIME DESTINATION lib/${PROJECT_NAME})
 
 endmacro(create_bolt_demo source)
 
-create_bolt_demo(demo_create_bolt_robot)
 create_bolt_demo(demo_bolt_from_yaml)
 create_bolt_demo(demo_bolt_sensor_reading)
-create_bolt_demo(demo_bolt_calibration)
-create_bolt_demo(demo_bolt_write_commands)
+
 
 ament_package()
