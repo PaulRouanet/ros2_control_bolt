@@ -32,7 +32,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "runtime_config_package",
-            default_value="ros2_control_bolt_bringup",
+            default_value="position_velocity_effort_gain_controller",
             description='Package with the controller\'s configuration in "config" folder. \
         Usually the argument is not set, it enables use of a custom setup.',
         )
@@ -98,7 +98,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "robot_controller",
-            default_value="position_velocity_effort_gain_controller",
+            default_value="pveg_controller",
             description="Robot controller to start.",
         )
     )
