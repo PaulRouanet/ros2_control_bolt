@@ -30,8 +30,8 @@ using hardware_interface::CommandInterface;
 using hardware_interface::HW_IF_EFFORT;
 using hardware_interface::HW_IF_POSITION;
 using hardware_interface::HW_IF_VELOCITY;
-using ros2_control_bolt::HW_IF_GAIN_KP;
-using ros2_control_bolt::HW_IF_GAIN_KD;
+using ros2_control_odri::HW_IF_GAIN_KP;
+using ros2_control_odri::HW_IF_GAIN_KD;
 
 // subclassing and friending so we can access member variables
 class FriendPosVelTorGainsController

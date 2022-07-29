@@ -28,7 +28,7 @@
 #include "rclcpp_lifecycle/state.hpp"
 #include "realtime_tools/realtime_buffer.h"
 #include "std_msgs/msg/float64_multi_array.hpp"
-#include <system_interface_bolt.hpp>
+#include <system_interface_odri.hpp>
 #include "controller_interface/helpers.hpp"
 
 namespace position_velocity_effort_gain_controller{

@@ -20,10 +20,10 @@
             <param name="state_following_offset">0.0</param>
           </xacro:if>
           <xacro:unless value="${use_fake_hardware}">
-            <plugin>ros2_control_bolt/SystemBoltHardware</plugin>
+            <plugin>ros2_control_odri/SystemOdriHardware</plugin>
             <param name="bolt_yaml">2.0</param>
             <xacro:property name="prop_bolt_config_yaml" value="$(find ros2_description_bolt)/config/bolt_config.yaml" />
-            <param name="bolt_config_yaml">${prop_bolt_config_yaml}</param>
+            <param name="odri_config_yaml">${prop_bolt_config_yaml}</param>
             </xacro:unless>
         </hardware>
       </xacro:unless>

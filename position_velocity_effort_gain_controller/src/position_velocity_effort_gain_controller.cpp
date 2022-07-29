@@ -22,7 +22,7 @@
 #include "controller_interface/controller_interface.hpp"
 #include "position_velocity_effort_gain_controller/position_velocity_effort_gain_controller.hpp"
 #include "hardware_interface/loaned_command_interface.hpp"
-#include "system_interface_bolt.hpp"
+#include "system_interface_odri.hpp"
 #include "rclcpp/logging.hpp"
 #include "rclcpp/qos.hpp"
 #include "controller_interface/helpers.hpp"
