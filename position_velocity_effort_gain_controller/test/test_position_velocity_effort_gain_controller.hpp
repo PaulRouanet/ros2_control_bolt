@@ -62,7 +62,7 @@ public:
   void SetUp();
   void TearDown();
 
-  void SetUpController();//bool set_params_and_activate = false);
+  void SetUpController();
   void SetParametersAndActivateController();
 
 protected:
@@ -96,12 +96,7 @@ protected:
   CommandInterface joint_1_kd_cmd_{joint_names_[0], HW_IF_GAIN_KD, &kd_cmd_};
   CommandInterface joint_2_kd_cmd_{joint_names_[1], HW_IF_GAIN_KD, &kd_cmd_};
   CommandInterface joint_3_kd_cmd_{joint_names_[2], HW_IF_GAIN_KD, &kd_cmd_};
-
-  // CommandInterface joint_1_pos_cmd_{joint_name_, HW_IF_POSITION, &pos_cmd_};
-  // CommandInterface joint_1_vel_cmd_{joint_name_, HW_IF_VELOCITY, &vel_cmd_};
-  // CommandInterface joint_1_eff_cmd_{joint_name_, HW_IF_EFFORT, &eff_cmd_};
-  // CommandInterface joint_1_kp_cmd_{joint_names_, HW_IF_GAIN_KP, &kp_cmd_};
-  // CommandInterface joint_1_kd_cmd_{joint_names_, HW_IF_GAIN_KD, &kd_cmd_};
+  
 };
 
 #endif  // TEST_POSITION_VELOCITY_EFFORT_GAIN_CONTROLLER_HPP_
