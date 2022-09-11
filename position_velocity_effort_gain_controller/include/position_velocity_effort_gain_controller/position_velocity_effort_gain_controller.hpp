@@ -28,7 +28,7 @@
 #include "rclcpp_lifecycle/state.hpp"
 #include "realtime_tools/realtime_buffer.h"
 #include "std_msgs/msg/float64_multi_array.hpp"
-#include <system_interface_bolt.hpp>
+#include <system_interface_odri.hpp>
 #include "controller_interface/helpers.hpp"
 
 namespace position_velocity_effort_gain_controller{
@@ -40,7 +40,7 @@ namespace position_velocity_effort_gain_controller{
 
         public:
             std::vector<std::string> joint_names_;
-            std::string interface_name_;
+            std::vector<std::string> interface_names_;
 
             std::vector<std::string> command_interface_types_;
 
@@ -57,7 +57,7 @@ namespace position_velocity_effort_gain_controller{
 
             controller_interface::InterfaceConfiguration state_interface_configuration() const override;
 
-            controller_interface::return_type init(const std::string & controller_name) ;
+            controller_interface::return_type init(const std::string & controller_name);
 
             CallbackReturn on_configure(
             const rclcpp_lifecycle::State & previous_state) ;
@@ -70,7 +70,8 @@ namespace position_velocity_effort_gain_controller{
 
             controller_interface::return_type update() override;
 
-            void declare_parameters();
+             void declare_parameters();
+
             CallbackReturn read_parameters() ;
 
     };

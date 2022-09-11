@@ -18,7 +18,9 @@
 
 #include "controller_manager/controller_manager.hpp"
 #include "hardware_interface/resource_manager.hpp"
+#include "rclcpp/executor.hpp"
 #include "rclcpp/executors/single_threaded_executor.hpp"
+#include "rclcpp/utilities.hpp"
 #include "ros2_control_test_assets/descriptions.hpp"
 
 TEST(TestLoadPosVelTorGainsController, load_controller)
@@ -35,6 +37,4 @@ TEST(TestLoadPosVelTorGainsController, load_controller)
 
   ASSERT_NO_THROW(cm.load_controller(
     "position_velocity_effort_gain_controller", "position_velocity_effort_gain_controller/PosVelTorGainsController"));
-
-  rclcpp::shutdown();
 }

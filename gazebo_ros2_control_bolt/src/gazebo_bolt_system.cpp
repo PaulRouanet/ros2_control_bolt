@@ -524,7 +524,7 @@ hardware_interface::return_type GazeboBoltSystem::write()
         /*this->dataPtr->sim_joints_[j]->SetPosition(0, this->dataPtr->joint_position_cmd_[j],true);*/
 	this->dataPtr->joint_effort_[j] =
           this->dataPtr->joint_kp_cmd_[j]*err_pos +
-	  this->dataPtr->joint_kp_cmd_[j]*err_vel ;
+	  this->dataPtr->joint_kd_cmd_[j]*err_vel ;
         this->dataPtr->sim_joints_[j]->SetForce(0,  this->dataPtr->joint_effort_[j]);
 
 	RCLCPP_DEBUG_STREAM(this->nh_->get_logger(),"");
