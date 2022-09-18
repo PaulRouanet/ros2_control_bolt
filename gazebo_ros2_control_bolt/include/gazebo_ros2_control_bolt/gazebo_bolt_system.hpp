@@ -29,7 +29,7 @@
 namespace gazebo_ros2_control_bolt
 {
 using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
-  
+
 // Forward declaration
 class GazeboBoltSystemPrivate;
 

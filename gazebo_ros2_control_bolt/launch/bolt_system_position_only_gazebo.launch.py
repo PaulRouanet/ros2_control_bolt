@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess,IncludeLaunchDescription,RegisterEventHandler
+from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -58,39 +58,45 @@ def generate_launch_description():
     )
 
     load_joint_state_controller = ExecuteProcess(
-        cmd=['ros2','control','load_controller','--set-state','active',
-             'joint_state_broadcaster'],
-        output='screen'
-    )
-    
-    load_joint_trajectory_controller = ExecuteProcess(
-        cmd=['ros2','control','load_controller','--set-state','active',
-             'joint_trajectory_controller'],
-        output='screen'
-    )
-
-    spawn_forward_command_controller = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=["forward_position_controller"],
+        cmd=[
+            "ros2",
+            "control",
+            "load_controller",
+            "--set-state",
+            "active",
+            "joint_state_broadcaster",
+        ],
         output="screen",
     )
 
-    return LaunchDescription([
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=spawn_entity,
-                on_exit=[load_joint_state_controller],
-            )
-        ),
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=load_joint_state_controller,
-                on_exit=[load_joint_trajectory_controller],
-            )
-        ),
-            
-        gazebo,
-        node_robot_state_publisher,
-        spawn_entity,
-    ])
+    load_joint_trajectory_controller = ExecuteProcess(
+        cmd=[
+            "ros2",
+            "control",
+            "load_controller",
+            "--set-state",
+            "active",
+            "joint_trajectory_controller",
+        ],
+        output="screen",
+    )
+
+    return LaunchDescription(
+        [
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=spawn_entity,
+                    on_exit=[load_joint_state_controller],
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=load_joint_state_controller,
+                    on_exit=[load_joint_trajectory_controller],
+                )
+            ),
+            gazebo,
+            node_robot_state_publisher,
+            spawn_entity,
+        ]
+    )
