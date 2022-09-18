@@ -14,8 +14,8 @@ ROS 2 it's the big brother of ROS 1, he adapts the changes of robotics community
 
 ### 1) Download ROS2 :
 
-- You need a local setup with `Ubuntu 20.04`
-- If you have one go to this link for [ROS 2 Foxy Installation](https://docs.ros.org/en/foxy/Installation.html)
+- You need a local setup with `Ubuntu 22.04`
+- If you have one go to this link for [ROS 2 Humble Installation](https://docs.ros.org/en/humble/Installation.html)
 
 ### 2) Download ROS2 CONTROL :
 
@@ -24,8 +24,8 @@ ROS 2 it's the big brother of ROS 1, he adapts the changes of robotics community
 - Type that on your Terminal :
 
       sudo apt update
-      sudo apt install ros-foxy-ros2-control
-      sudo apt install ros-foxy-ros2-controllers
+      sudo apt install ros-humble-ros2-control
+      sudo apt install ros-humble-ros2-controllers
 
 
 ## 2 - Second step, Workspace :
@@ -59,7 +59,7 @@ You need to have a `clear workspace` to do some tests or find your files easily.
 
         git clone --recursive https://github.com/open-dynamic-robot-initiative/master-board.git
         git clone --recursive https://github.com/open-dynamic-robot-initiative/odri_control_interface.git
-        sudo apt install python3-sphinx python3-pybind11 ros-foxy-xacro
+        sudo apt install python3-sphinx python3-pybind11 ros-humble-xacro
 
 
 
@@ -86,9 +86,9 @@ Every time you change something in your code you need to upload with a `colcon b
 
 5) To only `update a part` of your code you changed, you can do this :
 
-        colcon build --packages-select ros2_hardware_interface_bolt
+        colcon build --packages-select ros2_description_bolt
 
-    This example is only here for updating the package ros2_hardware_interface_bolt
+    This example is only here for updating the package ros2_description_bolt
 
 
 **Now you have all you need for the project and you know how to do Colcon Build**
