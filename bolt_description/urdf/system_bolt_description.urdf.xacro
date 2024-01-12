@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<!--
+Copied from ODRI -
+https://github.com/open-dynamic-robot-initiative/robot_properties_bolt/blob/master/src/robot_properties_bolt/resources/xacro/bolt.urdf.xacro
+-->
+
+
+<robot name="bolt"
+  xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+  xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+  xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+
+  <xacro:property name="mesh_ext" value="stl" />
+  <xacro:property name="color_name" value="grey" />
+  <xacro:property name="color" value="0.8 0.8 0.8" />
+  <xacro:property name="opacity" value="1.0" />
+  <xacro:property name="new_leg" value="true" />
+  <xacro:property name="has_passive_ankle" value="false" />
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="use_crane" default="true" />
+  <xacro:arg name="use_sim" default="false" />
+  <xacro:arg name="use_fake_hardware" default="false" />
+
+  <!-- Include the legs -->
+  <xacro:include filename="system_bolt.urdf.xacro"/>
+
+  <!--If we use Gazebo-->
+  <xacro:if value="$(arg use_sim)">
+    <xacro:if value="$(arg use_crane)">
+      <xacro:include filename="$(find ros2_description_bolt)/urdf/crane.urdf.xacro" />
+    </xacro:if>
+  </xacro:if>
+
+  <xacro:include filename="$(find ros2_description_bolt)/ros2_control/system_bolt.ros2_control.xacro" />
+
+  <!-- ros_control plugin for Gazebo -->
+  <xacro:if value="$(arg use_sim)">
+    <gazebo>
+      <plugin name="gazebo_ros2_bolt" filename="libgazebo_ros2_control_bolt.so">
+	<parameters>$(find gazebo_ros2_control_bolt)/config/bolt_gazebo_config_controller.yaml</parameters>
+      </plugin>
+    </gazebo>
+  </xacro:if>
+
+  <xacro:if value="$(arg use_sim)">
+    <xacro:if value="$(arg use_crane)">
+      <xacro:crane parent="base_link" />
+    </xacro:if>
+  </xacro:if>
+
+
+  <!-- Include the fully parametrized bolt -->
+  <xacro:bolt_full
+      mesh_ext="${mesh_ext}"
+      color_name="${color_name}"
+      color="${color}"
+      opacity="${opacity}"
+      new_leg="${new_leg}"
+      has_passive_ankle="${has_passive_ankle}"/>
+
+  <xacro:system_bolt_ros2_control
+    name="SystemBoltRos2Control" prefix="$(arg prefix)" use_fake_hardware="$(arg use_fake_hardware)"
+      use_sim="$(arg use_sim)"/>
+
+</robot>
