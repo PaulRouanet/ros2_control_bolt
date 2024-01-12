@@ -1,3 +1,5 @@
+This repository has now been superseeded by https://github.com/stack-of-tasks/bolt_robot
+
 # ROS2_CONTROL_BOLT
 
 ## Introduction
